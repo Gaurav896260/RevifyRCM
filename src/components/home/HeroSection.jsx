@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Navbar from "../Navbar";
+import { AnimatedText } from "../AnimatedText"; // Ensure the path is correct
 
 const HeroSection = () => {
   // --- MOUSE PARALLAX LOGIC ---
@@ -19,7 +20,6 @@ const HeroSection = () => {
     y.set(e.clientY - rect.top);
   };
 
-  // Animations
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -43,7 +43,6 @@ const HeroSection = () => {
       onMouseMove={handleMouseMove}
       className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center font-sans selection:bg-emerald-100 bg-white"
     >
-      {/* NAVBAR COMPONENT INCLUDED HERE */}
       <Navbar />
 
       {/* BACKGROUND EFFECTS */}
@@ -55,7 +54,6 @@ const HeroSection = () => {
               "url('https://grainy-gradients.vercel.app/noise.svg')",
           }}
         />
-
         <motion.div
           style={{ x: bgX }}
           className="absolute top-[20%] left-[30%] w-[60%] h-[60%] bg-emerald-50 rounded-full blur-[120px]"
@@ -68,11 +66,11 @@ const HeroSection = () => {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 text-center px-6 max-w-5xl"
+        className="relative z-10 text-center px-6 max-w-6xl"
       >
         <motion.h1
           variants={itemVariants}
-          className="text-black text-6xl md:text-8xl lg:text-[100px] font-medium tracking-tighter leading-[0.9] mb-8"
+          className="text-black text-6xl md:text-8xl lg:text-[100px] font-medium tracking-tighter leading-[1.1] mb-8"
         >
           Take{" "}
           <span className="italic font-serif font-light text-emerald-500/80">
@@ -80,7 +78,13 @@ const HeroSection = () => {
           </span>
           <br />
           of revenue,{" "}
-          <span className="font-semibold text-emerald-600">effortlessly</span>
+          <AnimatedText
+            text="effortlessly"
+            className="inline-flex vertical-align-middle" // Keeps it inline with the text
+            textClassName="text-6xl md:text-8xl lg:text-[100px] font-semibold text-emerald-600 tracking-tighter leading-none"
+            underlineClassName="text-emerald-400/60 -bottom-2" // Adjusts underline color and position
+            underlineDuration={2}
+          />
         </motion.h1>
 
         <motion.p
@@ -111,7 +115,7 @@ const HeroSection = () => {
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Playfair+Display:italic@400&display=swap");
         .font-serif {
-          font-family: "Playfair Display", serif;
+          family: "Playfair Display", serif;
         }
       `}</style>
     </section>
