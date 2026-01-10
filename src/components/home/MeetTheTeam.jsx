@@ -22,7 +22,7 @@ const team = [
   {
     name: "Lulu",
     role: "Office Administrator",
-    image: "/lulu.png",
+    image: "/lulu1.png",
     bio: "A true expert in patient care and comfort, Lulu brings a gentle, patient-centric approach to her role.",
   },
 ];
@@ -61,7 +61,9 @@ const MeetTheTeam = () => {
               <div className="relative mb-6">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="relative w-48 h-48 rounded-full overflow-hidden ring-4 ring-emerald-50 group-hover:ring-emerald-200 transition-all duration-500 z-10"
+                  className={`relative w-48 h-48 rounded-full overflow-hidden ring-4 ring-emerald-50 group-hover:ring-emerald-200 transition-all duration-500 z-10
+    ${member.name === "Lulu" ? "-translate-y-2 translate-x-2" : ""}
+  `}
                 >
                   <img
                     src={member.image}

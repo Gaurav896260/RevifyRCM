@@ -108,18 +108,6 @@ const HeroSection = () => {
         </motion.div>
       </motion.div>
 
-      {/* FOOTER TEXT */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute bottom-10 w-full text-center z-10"
-      >
-        <div className="h-[1px] w-16 bg-gray-200 mx-auto mb-4" />
-        <p className="text-gray-400 text-[10px] uppercase tracking-[0.6em]">
-          Modernized • Unified • Secure
-        </p>
-      </motion.div>
-
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Playfair+Display:italic@400&display=swap");
         .font-serif {

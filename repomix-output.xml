@@ -41,7 +41,35 @@ The content is organized as follows:
 
 <directory_structure>
 public/
+  logos/
+    ehr1.png
+    ehr10.png
+    ehr11.png
+    ehr12.png
+    ehr13.png
+    ehr2.png
+    ehr3.png
+    ehr4.png
+    ehr5.png
+    ehr6.png
+    ehr7.png
+    ehr8.png
+    ehr9.png
+    p1.png
+    p10.png
+    p2.png
+    p3.png
+    p4.png
+    p5.png
+    p6.png
+    p7.png
+    p8.png
+    p9.png
+  amanda.png
+  clare.png
+  greg.png
   image.png
+  lulu.png
   vite.svg
 src/
   assets/
@@ -49,7 +77,13 @@ src/
     react.svg
   components/
     home/
+      ClaimLifeCycle.jsx
       HeroSection.jsx
+      LogoMarquee.jsx
+      MeetTheTeam.jsx
+      RadialScrollGallery.jsx
+      Testimonials.jsx
+    Footer.jsx
     Navbar.jsx
   lib/
     utils.js
@@ -72,6 +106,391 @@ vite.config.js
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/components/home/RadialScrollGallery.jsx">
+"use client";
+
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+function useMergeRefs(...refs) {
+  return useMemo(() => {
+    if (refs.every((ref) => ref == null)) return null;
+    return (node) => {
+      refs.forEach((ref) => {
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref != null) {
+          ref.current = node;
+        }
+      });
+    };
+  }, [refs]);
+}
+
+function useResponsiveValue(baseValue, mobileValue) {
+  const [value, setValue] = useState(baseValue);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleResize = () => {
+      setValue(window.innerWidth < 768 ? mobileValue : baseValue);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [baseValue, mobileValue]);
+  return value;
+}
+
+export const RadialScrollGallery = forwardRef(
+  (
+    {
+      children,
+      scrollDuration = 2500,
+      visiblePercentage = 45,
+      baseRadius = 550,
+      mobileRadius = 220,
+      className = "",
+      startTrigger = "center center",
+      onItemSelect,
+      direction = "ltr",
+      disabled = false,
+      ...rest
+    },
+    ref
+  ) => {
+    const pinRef = useRef(null);
+    const containerRef = useRef(null);
+    const childRef = useRef(null);
+    const mergedRef = useMergeRefs(ref, pinRef);
+
+    const [hoveredIndex, setHoveredIndex] = useState(null);
+    const [childSize, setChildSize] = useState(null);
+    const [isMounted, setIsMounted] = useState(false);
+
+    const currentRadius = useResponsiveValue(baseRadius, mobileRadius);
+    const circleDiameter = currentRadius * 2;
+
+    const { visibleDecimal, hiddenDecimal } = useMemo(() => {
+      const clamped = Math.max(10, Math.min(100, visiblePercentage));
+      const v = clamped / 100;
+      return { visibleDecimal: v, hiddenDecimal: 1 - v };
+    }, [visiblePercentage]);
+
+    const childrenNodes = React.Children.toArray(children(hoveredIndex));
+    const childrenCount = childrenNodes.length;
+
+    useEffect(() => {
+      setIsMounted(true);
+      if (!childRef.current) return;
+      const observer = new ResizeObserver(() => {
+        setChildSize({
+          w: childRef.current.offsetWidth,
+          h: childRef.current.offsetHeight,
+        });
+        ScrollTrigger.refresh();
+      });
+      observer.observe(childRef.current);
+      return () => observer.disconnect();
+    }, [childrenCount]);
+
+    useGSAP(
+      () => {
+        if (!pinRef.current || !containerRef.current || childrenCount === 0)
+          return;
+
+        gsap.to(containerRef.current, {
+          rotation: 360,
+          ease: "none",
+          scrollTrigger: {
+            trigger: pinRef.current,
+            pin: true,
+            start: startTrigger,
+            end: `+=${scrollDuration}`,
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+      },
+      {
+        scope: pinRef,
+        dependencies: [
+          scrollDuration,
+          currentRadius,
+          startTrigger,
+          childrenCount,
+        ],
+      }
+    );
+
+    const visibleAreaHeight = childSize
+      ? circleDiameter * visibleDecimal + childSize.h + 100
+      : 600;
+
+    return (
+      <div
+        ref={mergedRef}
+        className={`w-full relative overflow-hidden ${className}`}
+        {...rest}
+      >
+        <div
+          className="relative w-full overflow-hidden"
+          style={{
+            height: `${visibleAreaHeight}px`,
+            maskImage:
+              "linear-gradient(to top, transparent 0%, black 30%, black 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to top, transparent 0%, black 30%, black 100%)",
+          }}
+        >
+          <ul
+            ref={containerRef}
+            className={`absolute left-1/2 -translate-x-1/2 m-0 p-0 list-none transition-opacity duration-500 ${
+              isMounted ? "opacity-100" : "opacity-0"
+            }`}
+            style={{
+              width: circleDiameter,
+              height: circleDiameter,
+              bottom: -(circleDiameter * hiddenDecimal),
+            }}
+          >
+            {childrenNodes.map((child, index) => {
+              const angle = (index / childrenCount) * 2 * Math.PI;
+              const x = currentRadius * Math.cos(angle);
+              const y = currentRadius * Math.sin(angle);
+              const rotationAngle = (angle * 180) / Math.PI;
+
+              return (
+                <li
+                  key={index}
+                  ref={index === 0 ? childRef : null}
+                  className="absolute top-1/2 left-1/2"
+                  style={{
+                    transform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) rotate(${
+                      rotationAngle + 90
+                    }deg)`,
+                  }}
+                >
+                  <div
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    className={`transition-all duration-500 ${
+                      hoveredIndex === index
+                        ? "scale-110"
+                        : hoveredIndex !== null
+                        ? "blur-sm opacity-40"
+                        : ""
+                    }`}
+                  >
+                    {child}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+);
+
+RadialScrollGallery.displayName = "RadialScrollGallery";
+</file>
+
+<file path="public/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+</file>
+
+<file path="src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+</file>
+
+<file path="src/components/home/ClaimLifeCycle.jsx">
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
+import { RadialScrollGallery } from "./RadialScrollGallery"; // Adjust path
+import {
+  UserCheck,
+  ClipboardCheck,
+  Settings,
+  Cpu,
+  FileText,
+  Activity,
+  Layers,
+  RotateCcw,
+  Wrench,
+} from "lucide-react";
+
+const steps = [
+  {
+    title: "Provider Credentialing",
+    icon: <UserCheck />,
+    desc: "Enrollment & Primary Source Verification",
+  },
+  {
+    title: "Eligibility & Benefits",
+    icon: <ClipboardCheck />,
+    desc: "Real-time coverage verification",
+  },
+  {
+    title: "Charge Entry",
+    icon: <Settings />,
+    desc: "Accurate data capture & entry",
+  },
+  {
+    title: "Medical Coding",
+    icon: <Cpu />,
+    desc: "Expert ICD-10 & CPT optimization",
+  },
+  {
+    title: "EDI Submission",
+    icon: <FileText />,
+    desc: "Electronic transmission to payers",
+  },
+  {
+    title: "Payment Posting",
+    icon: <Activity />,
+    desc: "EOB processing & reconciliation",
+  },
+  {
+    title: "A/R Management",
+    icon: <Layers />,
+    desc: "Aggressive follow-up on aged claims",
+  },
+  {
+    title: "Denial Mgmt",
+    icon: <RotateCcw />,
+    desc: "Root cause analysis & appeals",
+  },
+  {
+    title: "Patient Follow Up",
+    icon: <Wrench />,
+    desc: "Clear communication & statements",
+  },
+];
+
+const ClaimLifeCycle = () => {
+  return (
+    <section className="relative bg-white pt-18">
+      {/* SECTION HEADER */}
+      <div className="max-w-7xl mx-auto px-6 text-center mb-10 relative z-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">
+            End-to-End Workflow
+          </span>
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-black mb-6">
+            Life Cycle of a{" "}
+            <span className="text-emerald-500 italic font-serif">Claim</span>
+          </h2>
+          <p className="text-gray-400 max-w-xl mx-auto font-light text-lg">
+            Experience a continuous loop of financial optimization driven by
+            precision technology and expert oversight.
+          </p>
+        </motion.div>
+      </div>
+
+      {/* RADIAL GALLERY COMPONENT */}
+      <div className="relative z-10">
+        <RadialScrollGallery
+          scrollDuration={3000}
+          baseRadius={500}
+          mobileRadius={250}
+          visiblePercentage={55}
+          startTrigger="top 10%"
+        >
+          {(hoveredIndex) =>
+            steps.map((step, index) => (
+              <div
+                key={index}
+                className="group relative flex items-center justify-center"
+              >
+                {/* THE CARD */}
+                <div className="w-48 h-64 bg-white border border-gray-100 rounded-[2.5rem] p-6 shadow-2xl shadow-emerald-500/5 flex flex-col items-center justify-center text-center transition-all duration-500 overflow-hidden">
+                  {/* Subtle Number Gradient background */}
+                  <span className="absolute -top-4 -right-2 text-8xl font-black text-emerald-50/50 select-none pointer-events-none group-hover:text-emerald-100/50 transition-colors">
+                    {index + 1}
+                  </span>
+
+                  {/* Icon Container */}
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform duration-500">
+                    {React.cloneElement(step.icon, { size: 28 })}
+                  </div>
+
+                  {/* Text */}
+                  <h3 className="text-sm font-black uppercase tracking-widest text-black mb-2 leading-tight">
+                    {step.title}
+                  </h3>
+                  <p className="text-[10px] text-gray-400 font-medium tracking-tight px-2">
+                    {step.desc}
+                  </p>
+
+                  {/* Hover Progress Bar */}
+                  <div className="absolute bottom-0 left-0 h-1 bg-emerald-500 w-0 group-hover:w-full transition-all duration-700" />
+                </div>
+              </div>
+            ))
+          }
+        </RadialScrollGallery>
+      </div>
+
+      {/* INFINITY SIGN OVERLAY (Matches the Curve of the Wheel) */}
+      <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-[1] opacity-[0.07]">
+        <svg
+          viewBox="0 0 1200 400"
+          className="w-[140%] h-auto text-black fill-none stroke-current"
+        >
+          <motion.path
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            strokeWidth="1.2"
+            strokeOpacity="0.35"
+            d="
+          M300,200
+          C300,50 900,50 900,200
+          C900,350 300,350 300,200
+          C300,50 -300,50 -300,200
+          C-300,350 300,350 300,200
+        "
+          />
+        </svg>
+      </div>
+
+      {/* CLIPPED CONTENT */}
+      <div className="overflow-hidden">
+        {/* header + RadialScrollGallery */}
+      </div>
+
+      <style jsx global>{`
+        /* Adjusting the mask to feel more organic with the theme */
+        .mask-gradient {
+          mask-image: linear-gradient(
+            to top,
+            transparent 0%,
+            black 20%,
+            black 80%,
+            transparent 100%
+          );
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default ClaimLifeCycle;
+</file>
 
 <file path="src/components/home/HeroSection.jsx">
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
@@ -184,18 +603,6 @@ const HeroSection = () => {
         </motion.div>
       </motion.div>
 
-      {/* FOOTER TEXT */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute bottom-10 w-full text-center z-10"
-      >
-        <div className="h-[1px] w-16 bg-gray-200 mx-auto mb-4" />
-        <p className="text-gray-400 text-[10px] uppercase tracking-[0.6em]">
-          Modernized • Unified • Secure
-        </p>
-      </motion.div>
-
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Playfair+Display:italic@400&display=swap");
         .font-serif {
@@ -207,6 +614,428 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+</file>
+
+<file path="src/components/home/LogoMarquee.jsx">
+import { motion } from "framer-motion";
+
+const ehrLogos = [
+  { name: "EHR 1", path: "/logos/ehr1.png" },
+  { name: "EHR 2", path: "/logos/ehr2.png" },
+  { name: "EHR 3", path: "/logos/ehr3.png" },
+  { name: "EHR 4", path: "/logos/ehr4.png" },
+  { name: "EHR 5", path: "/logos/ehr5.png" },
+  { name: "EHR 6", path: "/logos/ehr6.png" },
+  { name: "EHR 7", path: "/logos/ehr7.png" },
+  { name: "EHR 8", path: "/logos/ehr8.png" },
+  { name: "EHR 9", path: "/logos/ehr9.png" },
+  { name: "EHR 10", path: "/logos/ehr10.png" },
+  { name: "EHR 11", path: "/logos/ehr11.png" },
+  { name: "EHR 12", path: "/logos/ehr12.png" },
+  { name: "EHR 13", path: "/logos/ehr13.png" },
+];
+
+const partnerLogos = [
+  { name: "Partner 1", path: "/logos/p1.png" },
+  { name: "Partner 2", path: "/logos/p2.png" },
+  { name: "Partner 3", path: "/logos/p3.png" },
+  { name: "Partner 4", path: "/logos/p4.png" },
+  { name: "Partner 5", path: "/logos/p5.png" },
+  { name: "Partner 6", path: "/logos/p6.png" },
+  { name: "Partner 7", path: "/logos/p7.png" },
+  { name: "Partner 8", path: "/logos/p8.png" },
+  { name: "Partner 9", path: "/logos/p9.png" },
+  { name: "Partner 10", path: "/logos/p10.png" },
+];
+
+const LogoRow = ({ logos, direction = "left", speed = 40 }) => {
+  // We duplicate the logos array to ensure there's enough content to fill the screen
+  // for a seamless "infinite" scroll effect.
+  const duplicatedLogos = [...logos, ...logos];
+
+  return (
+    <div className="flex overflow-hidden py-10 relative">
+      <motion.div
+        animate={{
+          x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"],
+        }}
+        transition={{
+          ease: "linear",
+          duration: speed,
+          repeat: Infinity,
+        }}
+        className="flex flex-none gap-20 items-center px-10"
+      >
+        {duplicatedLogos.map((logo, idx) => (
+          <div
+            key={`${logo.name}-${idx}`}
+            className="flex-none flex items-center justify-center transition-transform duration-300 hover:scale-110"
+          >
+            <img
+              src={logo.path}
+              alt={logo.name}
+              className="h-14 w-auto object-contain block" // "grayscale-0" is default, ensuring full color
+              onError={(e) => {
+                e.target.style.display = "none"; // Hides broken image links
+                console.error(`Image not found at: ${logo.path}`);
+              }}
+            />
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
+};
+
+const LogoMarquee = () => {
+  return (
+    <section className="py-24 bg-white relative">
+      {/* HEADER SECTION */}
+      <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-emerald-600 font-black text-xs uppercase tracking-[0.3em] mb-4"
+        >
+          Ecosystem Compatibility
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-3xl md:text-5xl font-bold text-black max-w-4xl mx-auto tracking-tight leading-tight"
+        >
+          A holistic suite of services,{" "}
+          <span className="text-emerald-500 italic font-serif">
+            compatible with
+          </span>{" "}
+          and supported by
+        </motion.h2>
+      </div>
+
+      {/* MARQUEE CONTAINER */}
+      <div className="relative w-full overflow-hidden">
+        {/* Visual Overlays for smooth entry/exit */}
+        <div className="absolute inset-y-0 left-0 w-24 md:w-48 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-24 md:w-48 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        {/* Row 1: EHR Logos (Right to Left) */}
+        <LogoRow logos={ehrLogos} direction="left" speed={50} />
+
+        {/* Row 2: Partner Logos (Left to Right) */}
+        <LogoRow logos={partnerLogos} direction="right" speed={45} />
+      </div>
+
+      {/* FOOTER ACCENT */}
+      <div className="mt-12 flex justify-center opacity-20">
+        <div className="h-[1px] w-32 bg-emerald-500" />
+      </div>
+    </section>
+  );
+};
+
+export default LogoMarquee;
+</file>
+
+<file path="src/components/home/MeetTheTeam.jsx">
+import { motion } from "framer-motion";
+
+const team = [
+  {
+    name: "Amanda Perez",
+    role: "Founder",
+    image: "/amanda.png", // Replace with your public folder path
+    bio: "Amanda is an Austin, Texas native with over 21 years of experience in leadership roles at major healthcare organizations.",
+  },
+  {
+    name: "Greg Garza",
+    role: "Operations Manager",
+    image: "/greg.png",
+    bio: "Greg is a highly experienced business professional specializing in technology and healthcare operations.",
+  },
+  {
+    name: "Clarence Abellanosa",
+    role: "Patient Access Manager",
+    image: "/clare.png",
+    bio: "Clarence has extensive experience in patient access, client services, and administrative leadership.",
+  },
+  {
+    name: "Lulu",
+    role: "Office Administrator",
+    image: "/lulu.png",
+    bio: "A true expert in patient care and comfort, Lulu brings a gentle, patient-centric approach to her role.",
+  },
+];
+
+const MeetTheTeam = () => {
+  return (
+    <section className="py-24 bg-white relative overflow-hidden">
+      {/* Subtle Background Decoration */}
+      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-emerald-50/30 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-20"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tighter text-black mb-4">
+            Meet The{" "}
+            <span className="text-emerald-500 italic font-serif">Team</span>
+          </h2>
+          <div className="h-1 w-20 bg-emerald-500 mx-auto rounded-full" />
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {team.map((member, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1, duration: 0.8 }}
+              className="group flex flex-col items-center text-center"
+            >
+              {/* Image Container with Custom Border Effect */}
+              <div className="relative mb-6">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="relative w-48 h-48 rounded-full overflow-hidden ring-4 ring-emerald-50 group-hover:ring-emerald-200 transition-all duration-500 z-10"
+                >
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                </motion.div>
+
+                {/* Decorative background circle */}
+                <div className="absolute -inset-2 bg-emerald-100/50 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+
+              {/* Text Content */}
+              <h3 className="text-xl font-bold text-black mb-1 group-hover:text-emerald-600 transition-colors">
+                {member.name}
+              </h3>
+              <p className="text-emerald-600 text-xs font-black uppercase tracking-[0.2em] mb-4">
+                {member.role}
+              </p>
+              <p className="text-gray-500 text-sm leading-relaxed font-light px-4">
+                {member.bio}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default MeetTheTeam;
+</file>
+
+<file path="src/components/home/Testimonials.jsx">
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+
+// --- Revify Testimonial Data from Image ---
+const testimonials = [
+  {
+    text: "We were struggling to keep up with our medical billing and collections... We chose Revify RCM Group for their expertise and personalized approach.",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jamie",
+    name: "Jamie Washington",
+    role: "D.C.",
+  },
+  {
+    text: "From the start, the team at Revify took the time to understand our unique challenges... created a customized plan to optimize our revenue cycle.",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Craig",
+    name: "Craig",
+    role: "Albuquerque, NM",
+  },
+  {
+    text: "Since partnering with Revify, we've seen a dramatic improvement in our financial performance. Our claims are being processed faster and collections have increased.",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos",
+    name: "Carlos",
+    role: "Boca Raton, FL",
+  },
+  {
+    text: "I highly recommend Revify to any healthcare organization looking to streamline their revenue cycle and improve their bottom line.",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elaine",
+    name: "Elaine",
+    role: "Charlotte N.C.",
+  },
+  // Duplicating a few to ensure the smooth infinite scroll loop works
+  {
+    text: "They have been true partners in our success.",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Revify",
+    name: "Health Partner",
+    role: "Medical Lead",
+  },
+];
+
+const firstColumn = testimonials.slice(0, 2);
+const secondColumn = testimonials.slice(2, 4);
+const thirdColumn = testimonials.slice(0, 3);
+
+const TestimonialsColumn = (props) => {
+  return (
+    <div className={props.className}>
+      <motion.ul
+        animate={{ translateY: "-50%" }}
+        transition={{
+          duration: props.duration || 10,
+          repeat: Infinity,
+          ease: "linear",
+          repeatType: "loop",
+        }}
+        className="flex flex-col gap-6 pb-6 list-none m-0 p-0"
+      >
+        {[...new Array(2)].map((_, index) => (
+          <React.Fragment key={index}>
+            {props.testimonials.map(({ text, image, name, role }, i) => (
+              <motion.li
+                key={`${index}-${i}`}
+                whileHover={{ scale: 1.03, y: -8 }}
+                className="p-8 rounded-3xl border border-neutral-200 bg-white shadow-lg max-w-xs w-full transition-all cursor-default select-none"
+              >
+                <blockquote className="m-0 p-0">
+                  <p className="text-neutral-600 leading-relaxed font-normal italic">
+                    "{text}"
+                  </p>
+                  <footer className="flex items-center gap-3 mt-6">
+                    <img
+                      src={image}
+                      alt={name}
+                      className="h-10 w-10 rounded-full bg-emerald-50"
+                    />
+                    <div className="flex flex-col text-left">
+                      <cite className="font-semibold not-italic text-neutral-900">
+                        {name}
+                      </cite>
+                      <span className="text-xs text-neutral-500">{role}</span>
+                    </div>
+                  </footer>
+                </blockquote>
+              </motion.li>
+            ))}
+          </React.Fragment>
+        ))}
+      </motion.ul>
+    </div>
+  );
+};
+
+const TestimonialsSection = () => {
+  return (
+    <section className="bg-white py-24 relative overflow-hidden">
+      <div className="container px-4 mx-auto">
+        <div className="flex flex-col items-center justify-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-center text-neutral-900">
+            Client{" "}
+            <span className="text-emerald-500 font-serif italic">
+              Testimonials
+            </span>
+          </h2>
+        </div>
+        <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] max-h-[600px] overflow-hidden">
+          <TestimonialsColumn testimonials={firstColumn} duration={20} />
+          <TestimonialsColumn
+            testimonials={secondColumn}
+            className="hidden md:block"
+            duration={25}
+          />
+          <TestimonialsColumn
+            testimonials={thirdColumn}
+            className="hidden lg:block"
+            duration={22}
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default TestimonialsSection;
+</file>
+
+<file path="src/components/Footer.jsx">
+import { motion } from "framer-motion";
+
+const Footer = () => {
+  return (
+    <footer className="relative bg-[#fafafa] pt-24 pb-12 overflow-hidden border-t border-gray-100">
+      {/* Massive Background Text - "Revify" spanning left to right - MUCH MORE VISIBLE */}
+      <div className="absolute bottom-8 left-0 right-0 pointer-events-none select-none flex items-end justify-start overflow-hidden">
+        <svg
+          viewBox="0 0 1200 250"
+          className="w-full h-auto"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="xMinYMax meet"
+        >
+          <text
+            x="10"
+            y="200"
+            fontSize="220"
+            fontWeight="400"
+            fill="none"
+            stroke="#9ca3af"
+            strokeWidth="2"
+            fontFamily="Inter, sans-serif"
+            letterSpacing="-0.02em"
+          >
+            Revify
+          </text>
+        </svg>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+          {/* LEFT SECTION: Empty */}
+          <div></div>
+
+          {/* RIGHT SECTION: Location Only */}
+          <div className="flex justify-end">
+            <div className="max-w-xs">
+              <h4 className="text-emerald-600 font-serif italic text-xl mb-6">
+                Location
+              </h4>
+              <div className="space-y-2 text-gray-600 font-light tracking-tight">
+                <p className="font-bold text-black text-sm uppercase tracking-widest">
+                  Headquarters
+                </p>
+                <p>Revify RCM Group</p>
+                <p>1515 E Cesar Chavez Suite #100</p>
+                <p>Austin, Tx. 78702</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM STRIP - Minimal */}
+        <div className="pt-8 border-t border-gray-200/60 flex justify-end">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="text-[10px] uppercase font-black tracking-[0.3em] text-emerald-600 flex items-center gap-2"
+          >
+            Back to top ↑
+          </motion.button>
+        </div>
+      </div>
+
+      <style jsx>{`
+        footer {
+          font-family: "Inter", sans-serif;
+        }
+      `}</style>
+    </footer>
+  );
+};
+
+export default Footer;
 </file>
 
 <file path="src/components/Navbar.jsx">
@@ -261,6 +1090,150 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+</file>
+
+<file path="src/App.css">
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+</file>
+
+<file path="src/index.css">
+@import "tailwindcss";
+</file>
+
+<file path="src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="postcss.config.js">
+// ESM syntax
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+    autoprefixer: {},
+  },
+};
+</file>
+
+<file path="README.md">
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+</file>
+
+<file path="tailwind.config.js">
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}", // covers all React files in src
+  ],
+  theme: {
+    extend: {}, // put custom theme/animations/colors here
+  },
+  plugins: [],
+};
 </file>
 
 <file path="test.jsx">
@@ -443,71 +1416,37 @@ const HeroSection = () => {
 export default HeroSection;
 </file>
 
-<file path="public/vite.svg">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
-</file>
+<file path="vite.config.js">
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-<file path="src/assets/react.svg">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
 </file>
 
 <file path="src/pages/LandingPage.jsx">
 import HeroSection from "../components/home/HeroSection";
-
+import ClaimLifeCycle from "../components/home/ClaimLifeCycle";
+import LogoMarquee from "../components/home/LogoMarquee"; // Import
+import TestimonialsSection from "../components/home/Testimonials";
+import MeetTheTeam from "../components/home/MeetTheTeam";
+import Footer from "../components/Footer";
 const LandingPage = () => {
   return (
-    <>
+    <main className="bg-white">
       <HeroSection />
-    </>
+      <LogoMarquee /> {/* Add here or below the Life Cycle */}
+      <ClaimLifeCycle />
+      <TestimonialsSection />
+      <MeetTheTeam />
+      <Footer />
+    </main>
   );
 };
 
 export default LandingPage;
-</file>
-
-<file path="src/App.css">
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
 </file>
 
 <file path="src/App.jsx">
@@ -521,50 +1460,6 @@ function App() {
 }
 
 export default App;
-</file>
-
-<file path="src/index.css">
-@import "tailwindcss";
-</file>
-
-<file path="src/main.jsx">
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
-</file>
-
-<file path=".gitignore">
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 </file>
 
 <file path="eslint.config.js">
@@ -597,22 +1492,6 @@ export default defineConfig([
     },
   },
 ]);
-</file>
-
-<file path="index.html">
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
 </file>
 
 <file path="package.json">
@@ -657,55 +1536,6 @@ export default defineConfig([
     "vite": "^7.1.6"
   }
 }
-</file>
-
-<file path="postcss.config.js">
-// ESM syntax
-export default {
-  plugins: {
-    '@tailwindcss/postcss': {},
-    autoprefixer: {},
-  },
-};
-</file>
-
-<file path="README.md">
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-</file>
-
-<file path="tailwind.config.js">
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}", // covers all React files in src
-  ],
-  theme: {
-    extend: {}, // put custom theme/animations/colors here
-  },
-  plugins: [],
-};
-</file>
-
-<file path="vite.config.js">
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-})
 </file>
 
 </files>
