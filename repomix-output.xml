@@ -78,6 +78,7 @@ src/
     react.svg
   components/
     about/
+      ContactPage.jsx
       OurMission.jsx
       OurVision.jsx
       WhoWeAre.jsx
@@ -88,6 +89,9 @@ src/
       MeetTheTeam.jsx
       RadialScrollGallery.jsx
       Testimonials.jsx
+    whychooseus/
+      EfficiencyDashboard.jsx
+      WhyUsIntro.jsx
     Footer.jsx
     Navbar.jsx
   lib/
@@ -95,6 +99,7 @@ src/
   pages/
     AboutPage.jsx
     LandingPage.jsx
+    WhyUsPage.jsx
   App.css
   App.jsx
   index.css
@@ -112,6 +117,456 @@ vite.config.js
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/components/whychooseus/EfficiencyDashboard.jsx">
+import React from "react";
+import { motion } from "framer-motion";
+
+const dashboardData = [
+  { label: "EHR Same Day Close Rate", value: 97.5, suffix: "%" },
+  { label: "Revenue vs Goal", value: 102.8, suffix: "%" },
+  { label: "Accuracy Rate", value: 99.2, suffix: "%" },
+  { label: "Bad Debt Reduction", value: 1.8, suffix: "%" },
+  { label: "First Pass Ratio", value: 94.8, suffix: "%" },
+  { label: "Increase in Cash Flow", value: 15.5, suffix: "%" },
+  { label: "Electronic Transmission", value: 70.4, suffix: "%" },
+  { label: "ERA Conversion Rate", value: 80.3, suffix: "%" },
+];
+
+const StatCard = ({ item, index }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{
+        delay: index * 0.1,
+        duration: 0.8,
+        ease: [0.19, 1, 0.22, 1],
+      }}
+      className="group relative bg-white border border-neutral-100 p-8 rounded-[2.5rem] flex items-center gap-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] hover:shadow-[0_30px_60px_rgba(16,185,129,0.1)] transition-all duration-700 overflow-hidden"
+    >
+      {/* Background Hover Glow */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-emerald-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+      {/* Circular Progress Visual */}
+      <div className="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
+        <svg className="w-full h-full transform -rotate-90">
+          <circle
+            cx="40"
+            cy="40"
+            r="36"
+            stroke="currentColor"
+            strokeWidth="3"
+            fill="transparent"
+            className="text-neutral-100"
+          />
+          <motion.circle
+            cx="40"
+            cy="40"
+            r="36"
+            stroke="currentColor"
+            strokeWidth="3"
+            fill="transparent"
+            strokeDasharray="226.2"
+            initial={{ strokeDashoffset: 226.2 }}
+            whileInView={{
+              strokeDashoffset:
+                226.2 - (226.2 * Math.min(item.value, 100)) / 100,
+            }}
+            viewport={{ once: true }}
+            transition={{ duration: 2, delay: 0.5, ease: "circOut" }}
+            className="text-emerald-500"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-black text-black">
+            {item.value}
+            {item.suffix}
+          </span>
+        </div>
+      </div>
+
+      {/* Text Label */}
+      <div className="relative z-10">
+        <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400 group-hover:text-emerald-600 transition-colors duration-500 mb-1">
+          Performance Metric
+        </h3>
+        <p className="text-xl font-bold text-black leading-tight tracking-tighter">
+          {item.label}
+        </p>
+      </div>
+
+      {/* Corner Accent */}
+      <div className="absolute top-4 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+      </div>
+    </motion.div>
+  );
+};
+
+const EfficiencyDashboard = () => {
+  return (
+    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
+      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-emerald-50/40 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        {/* FIXED HEADER SECTION */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-24"
+        >
+          <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">
+            Measurable Results
+          </span>
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-black leading-none">
+            Operational Efficiency{" "}
+            <span className="text-emerald-500 italic font-serif font-light">
+              Dashboard
+            </span>
+          </h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {dashboardData.map((item, idx) => (
+            <StatCard key={idx} item={item} index={idx} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default EfficiencyDashboard;
+</file>
+
+<file path="src/components/whychooseus/WhyUsIntro.jsx">
+import React from "react";
+import { motion } from "framer-motion";
+
+const WhyUsIntro = () => {
+  // Animation variants consistent with your Hero and Identity sections
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
+      {/* Background Accent - Soft Glow */}
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-emerald-50/40 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        {/* Header Section */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center mb-24"
+        >
+          <motion.span
+            variants={itemVariants}
+            className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block"
+          >
+            The Revify Advantage
+          </motion.span>
+          <motion.h2
+            variants={itemVariants}
+            className="text-6xl md:text-8xl font-bold tracking-tighter text-black leading-none"
+          >
+            Why Choose{" "}
+            <span className="text-emerald-500 italic font-serif font-light">
+              Us
+            </span>
+          </motion.h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* IMAGE SECTION with Floating Element */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
+            className="relative group"
+          >
+            <div className="relative z-10 overflow-hidden rounded-[3rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.08)]">
+              <img
+                src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80"
+                alt="Professional Expertise"
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000"
+              />
+            </div>
+
+            {/* Experience Badge */}
+            <motion.div
+              initial={{ x: -20, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="absolute -bottom-8 -right-8 bg-black text-white p-8 rounded-3xl shadow-2xl z-20"
+            >
+              <p className="text-emerald-400 text-4xl font-black tracking-tighter">
+                30+ Years
+              </p>
+              <p className="text-[10px] uppercase font-bold tracking-[0.2em] opacity-60">
+                Combined Expertise
+              </p>
+            </motion.div>
+          </motion.div>
+
+          {/* TEXT CONTENT */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="space-y-10"
+          >
+            <motion.div variants={itemVariants} className="space-y-6">
+              <p className="text-gray-500 text-xl font-light leading-relaxed">
+                We know that{" "}
+                <span className="text-black font-semibold italic">
+                  no two businesses are the same.
+                </span>{" "}
+                By partnering with a variety of providers, we've gained a deep
+                understanding of what truly drives their success.
+              </p>
+
+              <p className="text-gray-500 text-xl font-light leading-relaxed border-l-2 border-emerald-500 pl-8">
+                We believe that besides financial growth, the most valuable
+                thing we can offer our clients is{" "}
+                <span className="text-black font-medium underline decoration-emerald-500/30 decoration-4 underline-offset-4">
+                  clear, dependable, and timely service.
+                </span>
+              </p>
+
+              <p className="text-gray-500 text-xl font-light leading-relaxed">
+                Our team leverages over{" "}
+                <span className="font-bold text-black">30 years</span> of
+                combined experience in Revenue Cycle Management, along with the
+                power of{" "}
+                <span className="text-emerald-600 font-semibold">
+                  AI automation
+                </span>
+                , to deliver services with the highest level of accuracy and
+                care.
+              </p>
+            </motion.div>
+
+            {/* Bottom Visual Accent */}
+            <motion.div variants={itemVariants} className="pt-4">
+              <div className="flex items-center gap-4 group cursor-default">
+                <div className="w-12 h-px bg-emerald-500 group-hover:w-20 transition-all duration-500" />
+                <p className="text-sm font-black uppercase tracking-widest text-black">
+                  Precision • Accuracy • Care
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        .font-serif {
+          font-family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default WhyUsIntro;
+</file>
+
+<file path="src/pages/WhyUsPage.jsx">
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import WhyUsIntro from "../components/whychooseus/WhyUsIntro";
+import EfficiencyDashboard from "../components/whychooseus/EfficiencyDashboard";
+
+const WhyUsPage = () => {
+  return (
+    <main className="bg-white">
+      <Navbar />
+      <div className="pt-20">
+        <WhyUsIntro />
+        <EfficiencyDashboard />
+      </div>
+      <Footer />
+    </main>
+  );
+};
+
+export default WhyUsPage;
+</file>
+
+<file path="public/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+</file>
+
+<file path="src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+</file>
+
+<file path="src/components/about/ContactPage.jsx">
+import { motion } from "framer-motion";
+
+const ContactPage = () => {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative min-h-screen bg-black overflow-hidden py-24 flex flex-col justify-center">
+      {/* MASSIVE BACKGROUND TEXT */}
+      <div className="absolute top-10 left-0 w-full pointer-events-none select-none">
+        <h1 className="text-[25vw] font-black text-white leading-none tracking-tighter uppercase opacity-100">
+          Contact
+        </h1>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full mt-20">
+        {/* GREEN FORM CONTAINER */}
+        <motion.div
+          initial={{ opacity: 0, y: 100 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.19, 1, 0.22, 1] }}
+          className="bg-[#1a7a42] rounded-3xl p-8 md:p-16 shadow-2xl ml-auto w-full lg:w-4/5 xl:w-3/4"
+        >
+          <div className="mb-12">
+            <span className="text-white/70 text-xs font-bold uppercase tracking-[0.3em] block mb-4">
+              REACH US
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Contact us
+            </h2>
+            <p className="text-emerald-50 text-lg font-light max-w-2xl leading-relaxed">
+              Interested in working together? Fill out some info and we will be
+              in touch shortly. We can’t wait to hear from you!
+            </p>
+          </div>
+
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+            {/* LEFT COLUMN: INPUTS */}
+            <div className="space-y-10">
+              <div className="relative group">
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  required
+                  className="w-full bg-transparent border-b border-white/30 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors"
+                />
+                <span className="text-[10px] text-white/40 absolute -bottom-5 left-0">
+                  Required
+                </span>
+              </div>
+
+              <div className="relative group">
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  required
+                  className="w-full bg-transparent border-b border-white/30 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors"
+                />
+                <span className="text-[10px] text-white/40 absolute -bottom-5 left-0">
+                  Required
+                </span>
+              </div>
+
+              <div className="relative group">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  required
+                  className="w-full bg-transparent border-b border-white/30 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors"
+                />
+                <span className="text-[10px] text-white/40 absolute -bottom-5 left-0">
+                  Required
+                </span>
+              </div>
+
+              <div className="flex items-start gap-4 pt-4">
+                <input
+                  type="checkbox"
+                  id="signup"
+                  className="mt-1.5 accent-black"
+                />
+                <label
+                  htmlFor="signup"
+                  className="text-xs text-white/80 leading-snug"
+                >
+                  Sign up for news and updates. I give Revify permission to
+                  contact me at this email address.
+                </label>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: MESSAGE & SUBMIT */}
+            <div className="flex flex-col justify-between">
+              <div className="relative">
+                <textarea
+                  placeholder="Type your message here"
+                  required
+                  rows="4"
+                  className="w-full bg-transparent border-b border-white/30 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors resize-none"
+                />
+                <span className="text-[10px] text-white/40 absolute -bottom-5 left-0">
+                  Required
+                </span>
+              </div>
+
+              <div className="mt-12 md:mt-0 flex flex-col items-end gap-6">
+                <p className="text-[10px] text-white/50 text-right max-w-[250px]">
+                  This site is protected by reCAPTCHA and the Google Privacy
+                  Policy and Terms of Service apply.
+                </p>
+
+                <motion.button
+                  whileHover={{
+                    scale: 1.05,
+                    backgroundColor: "rgba(255,255,255,1)",
+                    color: "#1a7a42",
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  className="group flex items-center gap-4 border border-white rounded-full px-10 py-4 text-white font-bold transition-all"
+                >
+                  Submit
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    className="group-hover:translate-x-1 transition-transform"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </motion.button>
+              </div>
+            </div>
+          </form>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default ContactPage;
+</file>
 
 <file path="src/components/about/OurMission.jsx">
 import { motion } from "framer-motion";
@@ -500,37 +955,6 @@ const WhoWeAre = () => {
 };
 
 export default WhoWeAre;
-</file>
-
-<file path="src/pages/AboutPage.jsx">
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import WhoWeAre from "../components/about/WhoWeAre";
-import OurVision from "../components/about/OurVision";
-import OurMission from "../components/about/OurMission";
-import ContactPage from "../components/about/ContactPage";
-const AboutPage = () => {
-  return (
-    <main className="bg-white pt-20">
-      <Navbar />
-      <WhoWeAre />
-      <OurVision />
-      <OurMission />
-      <ContactPage />
-      <Footer />
-    </main>
-  );
-};
-
-export default AboutPage;
-</file>
-
-<file path="public/vite.svg">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
-</file>
-
-<file path="src/assets/react.svg">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
 </file>
 
 <file path="src/components/home/LogoMarquee.jsx">
@@ -975,60 +1399,6 @@ const TestimonialsSection = () => {
 export default TestimonialsSection;
 </file>
 
-<file path="src/components/Navbar.jsx">
-import { motion } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
-
-const Navbar = () => {
-  const location = useLocation();
-
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "About Us", path: "/about" },
-    { name: "Why Choose Us", path: "#" },
-    { name: "Our Services", path: "#" },
-  ];
-  return (
-    <motion.nav className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50">
-      <Link to="/">
-        <img
-          src="/image.png"
-          alt="Logo"
-          className="w-52 h-auto object-contain"
-        />
-      </Link>
-
-      <div className="hidden lg:flex items-center bg-gray-50/80 border border-gray-200/50 backdrop-blur-md px-2 py-1.5 rounded-full shadow-sm">
-        {navItems.map((item) => (
-          <Link
-            key={item.name}
-            to={item.path}
-            className={`px-6 py-2 rounded-full text-xs font-semibold transition-all ${
-              location.pathname === item.path
-                ? "bg-black text-white"
-                : "text-gray-500 hover:text-black"
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
-      </div>
-
-      {/* CTA */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-black text-white px-8 py-2.5 rounded-full text-sm font-bold tracking-tight"
-      >
-        SIGN UP
-      </motion.button>
-    </motion.nav>
-  );
-};
-
-export default Navbar;
-</file>
-
 <file path="src/lib/utils.js">
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -1036,6 +1406,29 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+</file>
+
+<file path="src/pages/AboutPage.jsx">
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import WhoWeAre from "../components/about/WhoWeAre";
+import OurVision from "../components/about/OurVision";
+import OurMission from "../components/about/OurMission";
+import ContactPage from "../components/about/ContactPage";
+const AboutPage = () => {
+  return (
+    <main className="bg-white pt-20">
+      <Navbar />
+      <WhoWeAre />
+      <OurVision />
+      <OurMission />
+      <ContactPage />
+      <Footer />
+    </main>
+  );
+};
+
+export default AboutPage;
 </file>
 
 <file path="src/App.css">
@@ -1844,6 +2237,60 @@ const Footer = () => {
 export default Footer;
 </file>
 
+<file path="src/components/Navbar.jsx">
+import { motion } from "framer-motion";
+import { Link, useLocation } from "react-router-dom";
+
+const Navbar = () => {
+  const location = useLocation();
+
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "About Us", path: "/about" },
+    { name: "Why Choose Us", path: "/why-us" },
+    { name: "Our Services", path: "#" },
+  ];
+  return (
+    <motion.nav className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50">
+      <Link to="/">
+        <img
+          src="/image.png"
+          alt="Logo"
+          className="w-52 h-auto object-contain"
+        />
+      </Link>
+
+      <div className="hidden lg:flex items-center bg-gray-50/80 border border-gray-200/50 backdrop-blur-md px-2 py-1.5 rounded-full shadow-sm">
+        {navItems.map((item) => (
+          <Link
+            key={item.name}
+            to={item.path}
+            className={`px-6 py-2 rounded-full text-xs font-semibold transition-all ${
+              location.pathname === item.path
+                ? "bg-black text-white"
+                : "text-gray-500 hover:text-black"
+            }`}
+          >
+            {item.name}
+          </Link>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-black text-white px-8 py-2.5 rounded-full text-sm font-bold tracking-tight"
+      >
+        SIGN UP
+      </motion.button>
+    </motion.nav>
+  );
+};
+
+export default Navbar;
+</file>
+
 <file path="src/pages/LandingPage.jsx">
 import HeroSection from "../components/home/HeroSection";
 import ClaimLifeCycle from "../components/home/ClaimLifeCycle";
@@ -1865,25 +2312,6 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-</file>
-
-<file path="src/App.jsx">
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LandingPage from "./pages/LandingPage";
-import AboutPage from "./pages/AboutPage";
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/about" element={<AboutPage />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
 </file>
 
 <file path="eslint.config.js">
@@ -1916,6 +2344,27 @@ export default defineConfig([
     },
   },
 ]);
+</file>
+
+<file path="src/App.jsx">
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import AboutPage from "./pages/AboutPage";
+import WhyUsPage from "./pages/WhyUsPage";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/why-us" element={<WhyUsPage />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
 </file>
 
 <file path="package.json">

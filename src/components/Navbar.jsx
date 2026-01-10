@@ -7,8 +7,8 @@ const Navbar = () => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "About Us", path: "/about" },
-    { name: "Why Choose Us", path: "#" },
-    { name: "Our Services", path: "#" },
+    { name: "Why Choose Us", path: "/why-us" },
+    { name: "Our Services", path: "/services" },
   ];
   return (
     <motion.nav className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50">
