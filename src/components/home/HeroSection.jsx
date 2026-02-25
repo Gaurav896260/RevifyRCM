@@ -1,8 +1,45 @@
+import { useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Navbar from "../Navbar";
 import { AnimatedText } from "../AnimatedText"; // Ensure the path is correct
 
+// Extracted exactly from your provided image
+const THEMES = [
+  {
+    name: "TrustTech Blue-Green",
+    primary: "#007BFF", // Bright Blue
+    secondary: "#28A745", // Fresh Green
+    accent: "#FFC107", // Vibrant Yellow
+    bgLight: "rgba(0, 123, 255, 0.08)",
+  },
+  {
+    name: "InnoHealth Purple-Teal",
+    primary: "#6F42C1", // Deep Purple
+    secondary: "#20C997", // Teal
+    accent: "#FD7E14", // Coral Orange
+    bgLight: "rgba(111, 66, 193, 0.08)",
+  },
+  {
+    name: "Wellness Navy-Neutral",
+    primary: "#001F3F", // Navy Blue
+    secondary: "#6C757D", // Cool Gray
+    accent: "#17A2B8", // Aqua
+    bgLight: "rgba(0, 31, 63, 0.08)",
+  },
+  {
+    name: "Energy Heal Orange-Blue",
+    primary: "#FD7E14", // Bright Orange
+    secondary: "#0D6EFD", // Cobalt Blue
+    accent: "#198754", // Forest Green
+    bgLight: "rgba(253, 126, 20, 0.08)",
+  },
+];
+
 const HeroSection = () => {
+  // --- THEME STATE ---
+  const [themeIndex, setThemeIndex] = useState(0);
+  const currentTheme = THEMES[themeIndex];
+
   // --- MOUSE PARALLAX LOGIC ---
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -18,6 +55,10 @@ const HeroSection = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     x.set(e.clientX - rect.left);
     y.set(e.clientY - rect.top);
+  };
+
+  const cycleTheme = () => {
+    setThemeIndex((prev) => (prev + 1) % THEMES.length);
   };
 
   const containerVariants = {
@@ -41,7 +82,14 @@ const HeroSection = () => {
   return (
     <section
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center font-sans selection:bg-emerald-100 bg-white"
+      style={{
+        // Injecting CSS Variables to power Tailwind arbitrary values smoothly
+        "--theme-primary": currentTheme.primary,
+        "--theme-secondary": currentTheme.secondary,
+        "--theme-accent": currentTheme.accent,
+        "--theme-bg-light": currentTheme.bgLight,
+      }}
+      className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center font-sans selection:bg-[var(--theme-bg-light)] bg-white transition-colors duration-500"
     >
       <Navbar />
 
@@ -56,7 +104,7 @@ const HeroSection = () => {
         />
         <motion.div
           style={{ x: bgX }}
-          className="absolute top-[20%] left-[30%] w-[60%] h-[60%] bg-emerald-50 rounded-full blur-[120px]"
+          className="absolute top-[20%] left-[30%] w-[60%] h-[60%] bg-[var(--theme-bg-light)] rounded-full blur-[120px] transition-colors duration-500"
         />
       </div>
 
@@ -73,16 +121,16 @@ const HeroSection = () => {
           className="text-black text-6xl md:text-8xl lg:text-[100px] font-medium tracking-tighter leading-[1.1] mb-8"
         >
           Take{" "}
-          <span className="italic font-serif font-light text-emerald-500/80">
+          <span className="italic font-serif font-light text-[var(--theme-primary)] opacity-90 transition-colors duration-500">
             control
           </span>
           <br />
           of revenue,{" "}
           <AnimatedText
             text="effortlessly"
-            className="inline-flex vertical-align-middle" // Keeps it inline with the text
-            textClassName="text-6xl md:text-8xl lg:text-[100px] font-semibold text-emerald-600 tracking-tighter leading-none"
-            underlineClassName="text-emerald-400/60 -bottom-2" // Adjusts underline color and position
+            className="inline-flex vertical-align-middle"
+            textClassName="text-6xl md:text-8xl lg:text-[100px] font-semibold text-[var(--theme-secondary)] tracking-tighter leading-none transition-colors duration-500"
+            underlineClassName="text-[var(--theme-accent)] opacity-80 -bottom-2 transition-colors duration-500"
             underlineDuration={2}
           />
         </motion.h1>
@@ -103,14 +151,39 @@ const HeroSection = () => {
             }}
             whileTap={{ scale: 0.98 }}
             className="
-              bg-emerald-500 text-black px-14 py-6 rounded-full
-              font-black text-lg transition-all
+              bg-[var(--theme-primary)] text-white px-14 py-6 rounded-full
+              font-black text-lg transition-all duration-300
             "
           >
             Get Started Free
           </motion.button>
         </motion.div>
       </motion.div>
+
+      {/* FLOATING THEME TOGGLE BUTTON */}
+      <div className="absolute bottom-8 right-8 z-50 flex items-center gap-4 bg-white/80 backdrop-blur-md p-2 pl-4 rounded-full shadow-lg border border-gray-100">
+        <span className="text-sm font-medium text-gray-600">
+          {currentTheme.name}
+        </span>
+        <button
+          onClick={cycleTheme}
+          className="flex gap-1 p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+          title="Toggle Theme"
+        >
+          <div
+            className="w-5 h-5 rounded-full"
+            style={{ backgroundColor: currentTheme.primary }}
+          />
+          <div
+            className="w-5 h-5 rounded-full"
+            style={{ backgroundColor: currentTheme.secondary }}
+          />
+          <div
+            className="w-5 h-5 rounded-full"
+            style={{ backgroundColor: currentTheme.accent }}
+          />
+        </button>
+      </div>
 
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Playfair+Display:italic@400&display=swap");

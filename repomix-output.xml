@@ -71,6 +71,7 @@ public/
   image.png
   lulu.png
   lulu1.png
+  revify-r.svg
   vite.svg
 src/
   assets/
@@ -89,9 +90,15 @@ src/
       MeetTheTeam.jsx
       RadialScrollGallery.jsx
       Testimonials.jsx
+    ourservices/
+      RCMConsulting.jsx
+      RCMServices.jsx
+      ServicesIntro.jsx
     whychooseus/
       EfficiencyDashboard.jsx
+      TrustSection.jsx
       WhyUsIntro.jsx
+    AnimatedText.jsx
     Footer.jsx
     Navbar.jsx
   lib/
@@ -99,6 +106,7 @@ src/
   pages/
     AboutPage.jsx
     LandingPage.jsx
+    ServicesPage.jsx
     WhyUsPage.jsx
   App.css
   App.jsx
@@ -118,292 +126,45 @@ vite.config.js
 <files>
 This section contains the contents of the repository's files.
 
-<file path="src/components/whychooseus/EfficiencyDashboard.jsx">
-import React from "react";
-import { motion } from "framer-motion";
+<file path="public/revify-r.svg">
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <linearGradient id="revifyGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6BCF9B"/>
+      <stop offset="55%" stop-color="#2FA4C9"/>
+      <stop offset="100%" stop-color="#1E3A5F"/>
+    </linearGradient>
+  </defs>
 
-const dashboardData = [
-  { label: "EHR Same Day Close Rate", value: 97.5, suffix: "%" },
-  { label: "Revenue vs Goal", value: 102.8, suffix: "%" },
-  { label: "Accuracy Rate", value: 99.2, suffix: "%" },
-  { label: "Bad Debt Reduction", value: 1.8, suffix: "%" },
-  { label: "First Pass Ratio", value: 94.8, suffix: "%" },
-  { label: "Increase in Cash Flow", value: 15.5, suffix: "%" },
-  { label: "Electronic Transmission", value: 70.4, suffix: "%" },
-  { label: "ERA Conversion Rate", value: 80.3, suffix: "%" },
-];
+  <path
+    d="
+      M18 12
+      H34
+      C43 12 48 17 48 24
+      C48 29 45 33 39 35
+      L48 52
+      H39
+      L31 36
+      H26
+      V52
+      H18
+      Z
 
-const StatCard = ({ item, index }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{
-        delay: index * 0.1,
-        duration: 0.8,
-        ease: [0.19, 1, 0.22, 1],
-      }}
-      className="group relative bg-white border border-neutral-100 p-8 rounded-[2.5rem] flex items-center gap-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] hover:shadow-[0_30px_60px_rgba(16,185,129,0.1)] transition-all duration-700 overflow-hidden"
-    >
-      {/* Background Hover Glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-emerald-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-      {/* Circular Progress Visual */}
-      <div className="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
-        <svg className="w-full h-full transform -rotate-90">
-          <circle
-            cx="40"
-            cy="40"
-            r="36"
-            stroke="currentColor"
-            strokeWidth="3"
-            fill="transparent"
-            className="text-neutral-100"
-          />
-          <motion.circle
-            cx="40"
-            cy="40"
-            r="36"
-            stroke="currentColor"
-            strokeWidth="3"
-            fill="transparent"
-            strokeDasharray="226.2"
-            initial={{ strokeDashoffset: 226.2 }}
-            whileInView={{
-              strokeDashoffset:
-                226.2 - (226.2 * Math.min(item.value, 100)) / 100,
-            }}
-            viewport={{ once: true }}
-            transition={{ duration: 2, delay: 0.5, ease: "circOut" }}
-            className="text-emerald-500"
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-black text-black">
-            {item.value}
-            {item.suffix}
-          </span>
-        </div>
-      </div>
-
-      {/* Text Label */}
-      <div className="relative z-10">
-        <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400 group-hover:text-emerald-600 transition-colors duration-500 mb-1">
-          Performance Metric
-        </h3>
-        <p className="text-xl font-bold text-black leading-tight tracking-tighter">
-          {item.label}
-        </p>
-      </div>
-
-      {/* Corner Accent */}
-      <div className="absolute top-4 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-      </div>
-    </motion.div>
-  );
-};
-
-const EfficiencyDashboard = () => {
-  return (
-    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
-      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-emerald-50/40 rounded-full blur-[120px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-8 relative z-10">
-        {/* FIXED HEADER SECTION */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-24"
-        >
-          <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">
-            Measurable Results
-          </span>
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-black leading-none">
-            Operational Efficiency{" "}
-            <span className="text-emerald-500 italic font-serif font-light">
-              Dashboard
-            </span>
-          </h2>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {dashboardData.map((item, idx) => (
-            <StatCard key={idx} item={item} index={idx} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default EfficiencyDashboard;
-</file>
-
-<file path="src/components/whychooseus/WhyUsIntro.jsx">
-import React from "react";
-import { motion } from "framer-motion";
-
-const WhyUsIntro = () => {
-  // Animation variants consistent with your Hero and Identity sections
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
-    },
-  };
-
-  return (
-    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
-      {/* Background Accent - Soft Glow */}
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-emerald-50/40 rounded-full blur-[100px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-8 relative z-10">
-        {/* Header Section */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-center mb-24"
-        >
-          <motion.span
-            variants={itemVariants}
-            className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block"
-          >
-            The Revify Advantage
-          </motion.span>
-          <motion.h2
-            variants={itemVariants}
-            className="text-6xl md:text-8xl font-bold tracking-tighter text-black leading-none"
-          >
-            Why Choose{" "}
-            <span className="text-emerald-500 italic font-serif font-light">
-              Us
-            </span>
-          </motion.h2>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          {/* IMAGE SECTION with Floating Element */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
-            className="relative group"
-          >
-            <div className="relative z-10 overflow-hidden rounded-[3rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.08)]">
-              <img
-                src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80"
-                alt="Professional Expertise"
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000"
-              />
-            </div>
-
-            {/* Experience Badge */}
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="absolute -bottom-8 -right-8 bg-black text-white p-8 rounded-3xl shadow-2xl z-20"
-            >
-              <p className="text-emerald-400 text-4xl font-black tracking-tighter">
-                30+ Years
-              </p>
-              <p className="text-[10px] uppercase font-bold tracking-[0.2em] opacity-60">
-                Combined Expertise
-              </p>
-            </motion.div>
-          </motion.div>
-
-          {/* TEXT CONTENT */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="space-y-10"
-          >
-            <motion.div variants={itemVariants} className="space-y-6">
-              <p className="text-gray-500 text-xl font-light leading-relaxed">
-                We know that{" "}
-                <span className="text-black font-semibold italic">
-                  no two businesses are the same.
-                </span>{" "}
-                By partnering with a variety of providers, we've gained a deep
-                understanding of what truly drives their success.
-              </p>
-
-              <p className="text-gray-500 text-xl font-light leading-relaxed border-l-2 border-emerald-500 pl-8">
-                We believe that besides financial growth, the most valuable
-                thing we can offer our clients is{" "}
-                <span className="text-black font-medium underline decoration-emerald-500/30 decoration-4 underline-offset-4">
-                  clear, dependable, and timely service.
-                </span>
-              </p>
-
-              <p className="text-gray-500 text-xl font-light leading-relaxed">
-                Our team leverages over{" "}
-                <span className="font-bold text-black">30 years</span> of
-                combined experience in Revenue Cycle Management, along with the
-                power of{" "}
-                <span className="text-emerald-600 font-semibold">
-                  AI automation
-                </span>
-                , to deliver services with the highest level of accuracy and
-                care.
-              </p>
-            </motion.div>
-
-            {/* Bottom Visual Accent */}
-            <motion.div variants={itemVariants} className="pt-4">
-              <div className="flex items-center gap-4 group cursor-default">
-                <div className="w-12 h-px bg-emerald-500 group-hover:w-20 transition-all duration-500" />
-                <p className="text-sm font-black uppercase tracking-widest text-black">
-                  Precision • Accuracy • Care
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
-
-      <style jsx global>{`
-        .font-serif {
-          font-family: "Playfair Display", serif;
-        }
-      `}</style>
-    </section>
-  );
-};
-
-export default WhyUsIntro;
-</file>
-
-<file path="src/pages/WhyUsPage.jsx">
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import WhyUsIntro from "../components/whychooseus/WhyUsIntro";
-import EfficiencyDashboard from "../components/whychooseus/EfficiencyDashboard";
-
-const WhyUsPage = () => {
-  return (
-    <main className="bg-white">
-      <Navbar />
-      <div className="pt-20">
-        <WhyUsIntro />
-        <EfficiencyDashboard />
-      </div>
-      <Footer />
-    </main>
-  );
-};
-
-export default WhyUsPage;
+      M26 19
+      V30
+      H33
+      C37 30 40 28 40 24
+      C40 21 37 19 33 19
+      Z
+    "
+    fill="url(#revifyGradient)"
+  />
+</svg>
 </file>
 
 <file path="public/vite.svg">
@@ -566,395 +327,6 @@ const ContactPage = () => {
 };
 
 export default ContactPage;
-</file>
-
-<file path="src/components/about/OurMission.jsx">
-import { motion } from "framer-motion";
-
-const OurMission = () => {
-  // Animation variants consistent with your Hero and Vision sections
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
-    },
-  };
-
-  return (
-    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
-      {/* Background Accent - Soft Left Glow */}
-      <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-emerald-50/40 rounded-full blur-[100px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
-        {/* TEXT CONTENT (Left on Desktop) */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="space-y-10"
-        >
-          <motion.div variants={itemVariants}>
-            <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">
-              Our Core Purpose
-            </span>
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-black leading-[0.9]">
-              Our{" "}
-              <span className="text-emerald-500 italic font-serif font-light">
-                Mission
-              </span>
-            </h2>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="space-y-8">
-            <div className="relative">
-              <p className="text-gray-500 text-xl font-light leading-relaxed">
-                Our core business philosophy is simple:{" "}
-                <span className="text-black font-semibold">
-                  you should be able to focus on providing exceptional patient
-                  care.
-                </span>{" "}
-                Meanwhile, we'll focus on what we do best—enhancing your revenue
-                by combining human expertise with cutting-edge AI.
-              </p>
-            </div>
-
-            <p className="text-gray-500 text-xl font-light leading-relaxed border-l-2 border-emerald-500 pl-8">
-              Our systems utilize AI to automate appeals and crawl major payer
-              websites, turning complex operational hurdles into
-              straightforward, intelligent solutions.
-            </p>
-
-            <div className="pt-4">
-              <p className="text-black text-2xl font-black tracking-tighter uppercase italic">
-                We don't just manage your revenue cycle,{" "}
-                <span className="text-emerald-500">we transform it.</span>
-              </p>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* IMAGE SECTION (Right on Desktop) */}
-        <div className="relative group">
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
-            className="relative z-10 overflow-hidden rounded-[3.5rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)]"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80"
-              alt="Healthcare Mission"
-              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000"
-            />
-          </motion.div>
-
-          {/* Floating Mission Badge */}
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="absolute -bottom-8 -right-8 z-20 bg-black text-white p-8 rounded-3xl shadow-2xl flex flex-col items-center justify-center text-center min-w-[180px]"
-          >
-            <span className="text-emerald-400 text-4xl font-black mb-1">
-              24/7
-            </span>
-            <p className="text-[10px] uppercase font-bold tracking-[0.2em] opacity-60">
-              AI Monitoring
-            </p>
-            <div className="mt-4 flex gap-1">
-              {[1, 2, 3, 4].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{ height: [8, 16, 8] }}
-                  transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                  className="w-1 bg-emerald-500 rounded-full"
-                />
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Back Decoration */}
-          <div className="absolute -top-6 -left-6 w-32 h-32 bg-emerald-50 rounded-full blur-3xl -z-10" />
-        </div>
-      </div>
-
-      <style jsx global>{`
-        .font-serif {
-          font-family: "Playfair Display", serif;
-        }
-      `}</style>
-    </section>
-  );
-};
-
-export default OurMission;
-</file>
-
-<file path="src/components/about/OurVision.jsx">
-import { motion } from "framer-motion";
-
-const OurVision = () => {
-  // Animation variants consistent with your Identity and Hero sections
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
-    },
-  };
-
-  return (
-    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
-      {/* Background Accent - Soft Glow */}
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-emerald-50/50 rounded-full blur-[120px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-        {/* IMAGE SECTION (Left on Desktop) */}
-        <div className="relative order-2 lg:order-1 group">
-          {/* Main Image with Premium Styling */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
-            className="relative z-10 overflow-hidden rounded-[3rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.08)]"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
-              alt="AI and Technology Vision"
-              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </motion.div>
-
-          {/* Floating AI Performance Card */}
-          <motion.div
-            initial={{ x: -20, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="absolute -top-6 -right-6 md:-right-10 z-20 bg-white/90 backdrop-blur-xl border border-emerald-100 p-6 rounded-3xl shadow-2xl max-w-[200px]"
-          >
-            <div className="flex flex-col gap-1">
-              <span className="text-emerald-500 font-black text-2xl tracking-tighter">
-                AI-Driven
-              </span>
-              <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400">
-                Task Automation
-              </p>
-              <div className="mt-3 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "85%" }}
-                  transition={{ duration: 1.5, delay: 1 }}
-                  className="h-full bg-emerald-500"
-                />
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Geometric Background Decoration */}
-          <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-emerald-50 rounded-br-[80px] -z-0" />
-        </div>
-
-        {/* TEXT CONTENT (Right on Desktop) */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="space-y-8 order-1 lg:order-2"
-        >
-          <motion.div variants={itemVariants}>
-            <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">
-              The Future of RCM
-            </span>
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-black leading-[0.9]">
-              Our{" "}
-              <span className="text-emerald-500 italic font-serif font-light">
-                Vision
-              </span>
-            </h2>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="space-y-6">
-            <p className="text-gray-500 text-xl font-light leading-relaxed">
-              We're <span className="font-bold text-black">Revify</span>, and
-              we're leading a revolution in Revenue Cycle Management. By using
-              AI to automate tasks, we're cutting down on manual work and
-              solving complex challenges.
-            </p>
-
-            <p className="text-gray-500 text-xl font-light leading-relaxed">
-              Our goal is to transform the RCM market with smart tools that can
-              handle processes on their own, allowing healthcare leaders to
-              focus on{" "}
-              <span className="text-black font-medium underline decoration-emerald-500/30 decoration-4 underline-offset-4">
-                oversight and strategy.
-              </span>
-            </p>
-
-            <div className="pt-6">
-              <div className="flex items-center gap-4 group cursor-default">
-                <div className="w-12 h-px bg-emerald-500 group-hover:w-20 transition-all duration-500" />
-                <p className="text-sm font-black uppercase tracking-widest text-black">
-                  Innovation • Strategy • Results
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      <style jsx global>{`
-        .font-serif {
-          font-family: "Playfair Display", serif;
-        }
-      `}</style>
-    </section>
-  );
-};
-
-export default OurVision;
-</file>
-
-<file path="src/components/about/WhoWeAre.jsx">
-import { motion } from "framer-motion";
-
-const WhoWeAre = () => {
-  // Animation variants consistent with your Hero Section
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
-    },
-  };
-
-  return (
-    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
-      {/* Subtle Background Glow */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-50 rounded-full blur-[120px] pointer-events-none opacity-60" />
-
-      <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
-        {/* TEXT CONTENT */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="space-y-10"
-        >
-          <motion.div variants={itemVariants}>
-            <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">
-              Our Identity
-            </span>
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-black leading-[0.9]">
-              Who{" "}
-              <span className="text-emerald-500 italic font-serif font-light">
-                we are
-              </span>
-            </h2>
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            className="space-y-8 text-gray-500 leading-relaxed font-light text-xl"
-          >
-            <p>
-              <span className="font-black text-black uppercase tracking-tighter mr-2">
-                Revify RCM Group
-              </span>
-              is a cost-effective provider of revenue cycle consulting services,
-              with a presence in Austin, Tx. We leverage our operational
-              expertise to deliver measurable results for healthcare
-              organizations and its providers.
-            </p>
-
-            <p className="border-l-2 border-emerald-500 pl-8 py-2">
-              We create value for our clients by boosting operational
-              efficiency, cutting costs, and increasing revenue. Our services
-              help clients maintain their operating margins and patient
-              satisfaction, enabling them to concentrate on providing care.
-            </p>
-
-            <p className="text-black font-medium">
-              Our goal is to increase the Return on Investment for all our
-              clients while maintaining full HIPAA compliance.
-            </p>
-          </motion.div>
-        </motion.div>
-
-        {/* IMAGE SECTION */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
-          className="relative group"
-        >
-          {/* Main Image with Premium Frame */}
-          <div className="relative z-10 overflow-hidden rounded-[3rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)]">
-            <img
-              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80"
-              alt="Healthcare Technology"
-              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            {/* Glassmorphism Overlay on Hover */}
-            <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-
-          {/* Floating Aesthetic Elements */}
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl -z-10" />
-          <div className="absolute -bottom-8 -left-8 w-64 h-24 bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl shadow-xl p-6 z-20 flex items-center gap-4">
-            <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-white">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">
-                Compliance
-              </p>
-              <p className="text-sm font-bold text-black">100% HIPAA Secure</p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Playfair+Display:italic@400&display=swap");
-        .font-serif {
-          font-family: "Playfair Display", serif;
-        }
-      `}</style>
-    </section>
-  );
-};
-
-export default WhoWeAre;
 </file>
 
 <file path="src/components/home/LogoMarquee.jsx">
@@ -1399,6 +771,815 @@ const TestimonialsSection = () => {
 export default TestimonialsSection;
 </file>
 
+<file path="src/components/ourservices/RCMConsulting.jsx">
+import React from "react";
+import { motion } from "framer-motion";
+
+const consultingServices = [
+  {
+    title: "RCM Process Analysis",
+    description:
+      "Evaluate all internal RCM processes to discover blind spots and recommend high-impact solutions.",
+  },
+  {
+    title: "Process Improvement",
+    description:
+      "Identify critical gaps in your end-to-end workflow and provide guidance on building an efficient, automated pipeline.",
+  },
+  {
+    title: "FTE Management",
+    description:
+      "Thoroughly analyze each RCM process to determine the exact human capital required to manage tasks effectively.",
+  },
+  {
+    title: "Performance Metrics",
+    description:
+      "Develop ideal metric templates based on deep process analysis to help your organization achieve targeted growth.",
+  },
+];
+
+const RCMConsulting = () => {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative py-32 bg-[#fafafa] overflow-hidden selection:bg-emerald-100">
+      {/* Background Accent */}
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+          {/* Main Title Section */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+            className="lg:col-span-4 space-y-6"
+          >
+            <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] block">
+              Strategic Growth
+            </span>
+            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-black leading-[0.9]">
+              RCM{" "}
+              <span className="text-emerald-500 italic font-serif font-light">
+                consulting
+              </span>{" "}
+              services
+            </h2>
+            <div className="pt-8 hidden lg:block">
+              <div className="w-16 h-1 bg-emerald-500 rounded-full" />
+            </div>
+          </motion.div>
+
+          {/* Consulting Grid */}
+          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-20">
+            {consultingServices.map((service, idx) => (
+              <motion.div
+                key={idx}
+                variants={itemVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="group relative"
+              >
+                {/* Visual Number Node */}
+                <div className="mb-6 flex items-center gap-4">
+                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest px-3 py-1 bg-emerald-50 rounded-full group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-500">
+                    Step 0{idx + 1}
+                  </span>
+                  <div className="h-px flex-grow bg-neutral-100" />
+                </div>
+
+                <h3 className="text-2xl font-bold text-black mb-4 tracking-tight group-hover:text-emerald-600 transition-colors duration-500">
+                  {service.title}
+                </h3>
+                <p className="text-gray-500 font-light leading-relaxed text-lg">
+                  {service.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default RCMConsulting;
+</file>
+
+<file path="src/components/ourservices/RCMServices.jsx">
+import React from "react";
+import { motion } from "framer-motion";
+
+const rcmServicesList = [
+  {
+    title: "Accounts Receivable Management",
+    description:
+      "We support your medical billing process, perform claim follow-up, and implement proactive denial prevention measures.",
+  },
+  {
+    title: "Payer Contract Review & Negotiation",
+    description:
+      "Periodic review and maintenance to ensure the best rates. We negotiate with payers to secure the best possible contracts for you.",
+  },
+  {
+    title: "Data Entry",
+    description:
+      "Streamlined charge entry to save you time. We also handle data entry into insurance company websites on your behalf.",
+  },
+  {
+    title: "Payer Credentialing",
+    description:
+      "Complete handling of applications, follow-ups, and re-enrollments. We simplify the complex credentialing process.",
+  },
+];
+
+const RCMServices = () => {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100 border-t border-gray-100">
+      {/* Background Decorative Accent */}
+      <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-emerald-50/40 rounded-full blur-[100px] pointer-events-none translate-x-1/2" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+          {/* Main Title Section */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+            className="lg:col-span-4 space-y-6"
+          >
+            <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] block">
+              Core Capabilities
+            </span>
+            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-black leading-[0.9]">
+              RCM{" "}
+              <span className="text-emerald-500 italic font-serif font-light">
+                Services
+              </span>
+            </h2>
+            <p className="text-gray-400 font-light text-lg max-w-xs">
+              Optimizing every touchpoint of the financial journey.
+            </p>
+          </motion.div>
+
+          {/* Services Grid */}
+          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-20">
+            {rcmServicesList.map((service, idx) => (
+              <motion.div
+                key={idx}
+                variants={itemVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="group relative"
+              >
+                {/* Visual Accent Node */}
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                  <div className="h-px flex-grow bg-neutral-100" />
+                </div>
+
+                <h3 className="text-2xl font-bold text-black mb-4 tracking-tight group-hover:text-emerald-600 transition-colors duration-500">
+                  {service.title}
+                </h3>
+                <p className="text-gray-500 font-light leading-relaxed text-lg">
+                  {service.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default RCMServices;
+</file>
+
+<file path="src/components/ourservices/ServicesIntro.jsx">
+import React from "react";
+import { motion } from "framer-motion";
+
+const ServicesIntro = () => {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
+      {/* Background Decorative Element */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-50/30 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/4" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        {/* CONTENT GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          {/* LEFT: TITLE */}
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="lg:col-span-5"
+          >
+            <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">
+              Our Expertise
+            </span>
+            <h2 className="text-7xl md:text-8xl font-serif italic font-light text-black tracking-tighter leading-none">
+              Our <span className="text-emerald-500">services</span>
+            </h2>
+          </motion.div>
+
+          {/* RIGHT: DESCRIPTION */}
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="lg:col-span-7 space-y-10 pt-4"
+          >
+            <p className="text-gray-500 text-xl font-light leading-relaxed">
+              At{" "}
+              <span className="font-black text-black uppercase tracking-tighter">
+                Revify RCM Group
+              </span>
+              , we offer comprehensive revenue cycle management solutions that
+              empower healthcare providers to focus on patient care while we
+              handle the complexities of billing and financial operations.
+            </p>
+
+            <div className="space-y-8 text-gray-500 text-xl font-light leading-relaxed">
+              <p>
+                Our core suite includes accurate medical billing and coding,
+                seamless claims submission and follow-up, efficient payment
+                posting, reconciliation, and proactive denial management.
+              </p>
+
+              <p className="border-l-2 border-emerald-500 pl-8 italic text-black font-medium">
+                We provide insightful analytics and reporting to help providers
+                make informed business decisions, reduce revenue loss, and
+                ensure steady financial growth.
+              </p>
+            </div>
+
+            {/* Bottom Visual Accent */}
+            <div className="pt-8">
+              <div className="flex items-center gap-6 group cursor-default">
+                <div className="w-16 h-px bg-emerald-500 group-hover:w-24 transition-all duration-500" />
+                <p className="text-xs font-black uppercase tracking-widest text-black">
+                  Efficiency • Transparency • Growth
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        .font-serif {
+          font-family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default ServicesIntro;
+</file>
+
+<file path="src/components/whychooseus/EfficiencyDashboard.jsx">
+import React from "react";
+import { motion } from "framer-motion";
+
+const dashboardData = [
+  { label: "EHR Same Day Close Rate", value: 97.5, suffix: "%" },
+  { label: "Revenue vs Goal", value: 102.8, suffix: "%" },
+  { label: "Accuracy Rate", value: 99.2, suffix: "%" },
+  { label: "Bad Debt Reduction", value: 1.8, suffix: "%" },
+  { label: "First Pass Ratio", value: 94.8, suffix: "%" },
+  { label: "Increase in Cash Flow", value: 15.5, suffix: "%" },
+  { label: "Electronic Transmission", value: 70.4, suffix: "%" },
+  { label: "ERA Conversion Rate", value: 80.3, suffix: "%" },
+];
+
+const StatCard = ({ item, index }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{
+        delay: index * 0.1,
+        duration: 0.8,
+        ease: [0.19, 1, 0.22, 1],
+      }}
+      className="group relative bg-white border border-neutral-100 p-8 rounded-[2.5rem] flex items-center gap-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] hover:shadow-[0_30px_60px_rgba(16,185,129,0.1)] transition-all duration-700 overflow-hidden"
+    >
+      {/* Background Hover Glow */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-emerald-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+      {/* Circular Progress Visual */}
+      <div className="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
+        <svg className="w-full h-full transform -rotate-90">
+          <circle
+            cx="40"
+            cy="40"
+            r="36"
+            stroke="currentColor"
+            strokeWidth="3"
+            fill="transparent"
+            className="text-neutral-100"
+          />
+          <motion.circle
+            cx="40"
+            cy="40"
+            r="36"
+            stroke="currentColor"
+            strokeWidth="3"
+            fill="transparent"
+            strokeDasharray="226.2"
+            initial={{ strokeDashoffset: 226.2 }}
+            whileInView={{
+              strokeDashoffset:
+                226.2 - (226.2 * Math.min(item.value, 100)) / 100,
+            }}
+            viewport={{ once: true }}
+            transition={{ duration: 2, delay: 0.5, ease: "circOut" }}
+            className="text-emerald-500"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-black text-black">
+            {item.value}
+            {item.suffix}
+          </span>
+        </div>
+      </div>
+
+      {/* Text Label */}
+      <div className="relative z-10">
+        <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400 group-hover:text-emerald-600 transition-colors duration-500 mb-1">
+          Performance Metric
+        </h3>
+        <p className="text-xl font-bold text-black leading-tight tracking-tighter">
+          {item.label}
+        </p>
+      </div>
+
+      {/* Corner Accent */}
+      <div className="absolute top-4 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+      </div>
+    </motion.div>
+  );
+};
+
+const EfficiencyDashboard = () => {
+  return (
+    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
+      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-emerald-50/40 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        {/* FIXED HEADER SECTION */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-24"
+        >
+          <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">
+            Measurable Results
+          </span>
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-black leading-none">
+            Operational Efficiency{" "}
+            <span className="text-emerald-500 italic font-serif font-light">
+              Dashboard
+            </span>
+          </h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {dashboardData.map((item, idx) => (
+            <StatCard key={idx} item={item} index={idx} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default EfficiencyDashboard;
+</file>
+
+<file path="src/components/whychooseus/TrustSection.jsx">
+import React from "react";
+import { motion } from "framer-motion";
+
+const TrustSection = () => {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-emerald-50/30 rounded-full blur-[120px] pointer-events-none -translate-x-1/2" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* LEFT COLUMN: PREMIUM COMPLIANCE VISUAL */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
+            className="relative group aspect-square lg:aspect-auto lg:h-[600px] flex items-center justify-center bg-neutral-900 rounded-[4rem] p-12 overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)]"
+          >
+            {/* Animated Grid Background */}
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:20px_20px]" />
+
+            <div className="relative z-10 flex flex-col items-center">
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="relative w-48 h-56 md:w-64 md:h-72 drop-shadow-[0_0_30px_rgba(16,185,129,0.3)]"
+              >
+                <svg
+                  viewBox="0 0 200 240"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-full h-full"
+                >
+                  <path
+                    d="M100 0L20 30V110C20 171.3 54.1 228.4 100 240C145.9 228.4 180 171.3 180 110V30L100 0Z"
+                    fill="#10b981"
+                  />
+                  <path
+                    d="M100 15L35 39V110C35 161.4 62.7 209.1 100 223.8C137.3 209.1 165 161.4 165 110V39L100 15Z"
+                    fill="#059669"
+                  />
+                  {/* Cross Symbol */}
+                  <rect x="85" y="75" width="30" height="30" fill="white" />
+                  <rect x="70" y="90" width="60" height="30" fill="white" />
+                </svg>
+              </motion.div>
+
+              <div className="mt-12 text-center">
+                <h3 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none">
+                  HIPAA
+                </h3>
+                <p className="text-xl md:text-2xl font-bold text-emerald-400 tracking-[0.3em] uppercase mt-4">
+                  Compliant
+                </p>
+              </div>
+            </div>
+
+            {/* Decorative Inner Glow */}
+            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl" />
+          </motion.div>
+
+          {/* RIGHT COLUMN: TEXT CONTENT */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="space-y-10"
+          >
+            <motion.div variants={itemVariants} className="space-y-4">
+              <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] block">
+                Trust & Security
+              </span>
+              <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-black leading-[0.9]">
+                Our Standard of{" "}
+                <span className="text-emerald-500 italic font-serif font-light">
+                  Excellence
+                </span>
+              </h2>
+            </motion.div>
+
+            <motion.div
+              variants={itemVariants}
+              className="space-y-8 text-gray-500 text-xl font-light leading-relaxed"
+            >
+              <p>
+                At{" "}
+                <span className="font-bold text-black uppercase tracking-tighter">
+                  Revify RCM
+                </span>
+                , we don’t just follow regulations—we set the benchmark. Our
+                commitment to integrity is woven into every automated flow and
+                manual oversight.
+              </p>
+
+              <p className="border-l-2 border-emerald-500 pl-8 italic">
+                We are driven by "Excellence in Action," delivering high-quality
+                revenue services while maintaining the highest level of HIPAA
+                data accuracy and patient privacy.
+              </p>
+
+              <p className="text-black font-medium">
+                As your trusted partner, you can be confident that we treat
+                patient information with the absolute respect, confidentiality,
+                and protection it deserves.
+              </p>
+            </motion.div>
+
+            {/* Bottom Visual Accent */}
+            <motion.div variants={itemVariants} className="pt-8">
+              <div className="flex items-center gap-6 group cursor-default">
+                <div className="w-16 h-px bg-emerald-500 group-hover:w-24 transition-all duration-500" />
+                <p className="text-xs font-black uppercase tracking-widest text-black">
+                  Security • Integrity • Excellence
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        .font-serif {
+          font-family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default TrustSection;
+</file>
+
+<file path="src/components/whychooseus/WhyUsIntro.jsx">
+import React from "react";
+import { motion } from "framer-motion";
+
+const WhyUsIntro = () => {
+  // Animation variants consistent with your Hero and Identity sections
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative py-32 bg-white overflow-hidden selection:bg-emerald-100">
+      {/* Background Accent - Soft Glow */}
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-emerald-50/40 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        {/* Header Section */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center mb-24"
+        >
+          <motion.span
+            variants={itemVariants}
+            className="text-emerald-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block"
+          >
+            The Revify Advantage
+          </motion.span>
+          <motion.h2
+            variants={itemVariants}
+            className="text-6xl md:text-8xl font-bold tracking-tighter text-black leading-none"
+          >
+            Why Choose{" "}
+            <span className="text-emerald-500 italic font-serif font-light">
+              Us
+            </span>
+          </motion.h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* IMAGE SECTION with Floating Element */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
+            className="relative group"
+          >
+            <div className="relative z-10 overflow-hidden rounded-[3rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.08)]">
+              <img
+                src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80"
+                alt="Professional Expertise"
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000"
+              />
+            </div>
+
+            {/* Experience Badge */}
+            <motion.div
+              initial={{ x: -20, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="absolute -bottom-8 -right-8 bg-black text-white p-8 rounded-3xl shadow-2xl z-20"
+            >
+              <p className="text-emerald-400 text-4xl font-black tracking-tighter">
+                30+ Years
+              </p>
+              <p className="text-[10px] uppercase font-bold tracking-[0.2em] opacity-60">
+                Combined Expertise
+              </p>
+            </motion.div>
+          </motion.div>
+
+          {/* TEXT CONTENT */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="space-y-10"
+          >
+            <motion.div variants={itemVariants} className="space-y-6">
+              <p className="text-gray-500 text-xl font-light leading-relaxed">
+                We know that{" "}
+                <span className="text-black font-semibold italic">
+                  no two businesses are the same.
+                </span>{" "}
+                By partnering with a variety of providers, we've gained a deep
+                understanding of what truly drives their success.
+              </p>
+
+              <p className="text-gray-500 text-xl font-light leading-relaxed border-l-2 border-emerald-500 pl-8">
+                We believe that besides financial growth, the most valuable
+                thing we can offer our clients is{" "}
+                <span className="text-black font-medium underline decoration-emerald-500/30 decoration-4 underline-offset-4">
+                  clear, dependable, and timely service.
+                </span>
+              </p>
+
+              <p className="text-gray-500 text-xl font-light leading-relaxed">
+                Our team leverages over{" "}
+                <span className="font-bold text-black">30 years</span> of
+                combined experience in Revenue Cycle Management, along with the
+                power of{" "}
+                <span className="text-emerald-600 font-semibold">
+                  AI automation
+                </span>
+                , to deliver services with the highest level of accuracy and
+                care.
+              </p>
+            </motion.div>
+
+            {/* Bottom Visual Accent */}
+            <motion.div variants={itemVariants} className="pt-4">
+              <div className="flex items-center gap-4 group cursor-default">
+                <div className="w-12 h-px bg-emerald-500 group-hover:w-20 transition-all duration-500" />
+                <p className="text-sm font-black uppercase tracking-widest text-black">
+                  Precision • Accuracy • Care
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        .font-serif {
+          font-family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default WhyUsIntro;
+</file>
+
+<file path="src/components/AnimatedText.jsx">
+import * as React from "react";
+import { motion } from "framer-motion";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+// Helper for Tailwind classes
+function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+const AnimatedText = React.forwardRef(
+  (
+    {
+      text,
+      className,
+      textClassName,
+      underlineClassName,
+      underlinePath = "M 0,10 Q 75,0 150,10 Q 225,20 300,10",
+      underlineHoverPath = "M 0,10 Q 75,20 150,10 Q 225,0 300,10",
+      underlineDuration = 1.5,
+      ...props
+    },
+    ref
+  ) => {
+    const pathVariants = {
+      hidden: { pathLength: 0, opacity: 0 },
+      visible: {
+        pathLength: 1,
+        opacity: 1,
+        transition: {
+          duration: underlineDuration,
+          ease: "easeInOut",
+        },
+      },
+    };
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "inline-flex flex-col items-center justify-center",
+          className
+        )}
+        {...props}
+      >
+        <div className="relative inline-block">
+          <motion.span
+            className={cn("block", textClassName)}
+            whileHover={{ scale: 1.02 }}
+          >
+            {text}
+          </motion.span>
+
+          <motion.svg
+            width="100%"
+            height="20"
+            viewBox="0 0 300 20"
+            preserveAspectRatio="none"
+            className={cn(
+              "absolute -bottom-2 left-0 w-full",
+              underlineClassName
+            )}
+          >
+            <motion.path
+              d={underlinePath}
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+              variants={pathVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              whileHover={{
+                d: underlineHoverPath,
+                transition: { duration: 0.8 },
+              }}
+            />
+          </motion.svg>
+        </div>
+      </div>
+    );
+  }
+);
+
+AnimatedText.displayName = "AnimatedText";
+
+export { AnimatedText };
+</file>
+
 <file path="src/lib/utils.js">
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -1429,6 +1610,53 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
+</file>
+
+<file path="src/pages/ServicesPage.jsx">
+import React from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ServicesIntro from "../components/ourservices/ServicesIntro";
+import RCMConsulting from "../components/ourservices/RCMConsulting";
+import RCMServices from "../components/ourservices/RCMServices";
+const ServicesPage = () => {
+  return (
+    <main className="bg-white">
+      <Navbar />
+      <div className="pt-20">
+        <ServicesIntro />
+        <RCMConsulting />
+        <RCMServices />
+      </div>
+      <Footer />
+    </main>
+  );
+};
+
+export default ServicesPage;
+</file>
+
+<file path="src/pages/WhyUsPage.jsx">
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import WhyUsIntro from "../components/whychooseus/WhyUsIntro";
+import EfficiencyDashboard from "../components/whychooseus/EfficiencyDashboard";
+import TrustSection from "../components/whychooseus/TrustSection";
+const WhyUsPage = () => {
+  return (
+    <main className="bg-white">
+      <Navbar />
+      <div className="pt-20">
+        <WhyUsIntro />
+        <EfficiencyDashboard />
+        <TrustSection />
+      </div>
+      <Footer />
+    </main>
+  );
+};
+
+export default WhyUsPage;
 </file>
 
 <file path="src/App.css">
@@ -1521,11 +1749,11 @@ dist-ssr
 </file>
 
 <file path="index.html">
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/revify-r.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React</title>
   </head>
@@ -1765,6 +1993,392 @@ export default defineConfig({
 })
 </file>
 
+<file path="src/components/about/OurMission.jsx">
+import { motion } from "framer-motion";
+
+const OurMission = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20, filter: "blur(8px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative pt-16 pb-32 lg:pt-24 lg:pb-40 bg-white overflow-hidden selection:bg-emerald-100">
+      {/* Background Aesthetic - Left accent to ground the text */}
+      <div className="absolute top-0 left-0 w-1/3 h-full bg-emerald-50/40 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          {/* LEFT SIDE: THE "BIG" TEXT (Sticky like WhoWeAre) */}
+          <div className="lg:col-span-7 sticky top-16">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+            >
+              <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.5em] mb-6 block">
+                Our Core Purpose
+              </span>
+
+              <h2 className="text-[15vw] lg:text-[11rem] font-bold tracking-[-0.078em] text-black leading-[1] relative">
+                Our <br />
+                <span className="text-emerald-500 italic font-serif font-light lowercase tracking-normal">
+                  Mission
+                </span>
+                {/* Decorative Line matching previous sections */}
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "120px" }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5, duration: 1 }}
+                  className="h-[2px] bg-black absolute -left-12 top-[45%] hidden lg:block"
+                />
+              </h2>
+            </motion.div>
+          </div>
+
+          {/* RIGHT SIDE: CONTENT & INSIGHTS */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="lg:col-span-5 lg:pt-12 space-y-12 relative"
+          >
+            {/* Primary Paragraph */}
+            <motion.div variants={itemVariants} className="space-y-6">
+              <p className="text-2xl md:text-3xl text-black leading-tight font-light">
+                Our philosophy is simple:{" "}
+                <span className="font-black border-b-2 border-emerald-500 pb-1">
+                  focus on patient care
+                </span>
+                —we'll handle the revenue.
+              </p>
+
+              <p className="text-gray-500 text-xl font-light leading-relaxed">
+                We enhance your revenue by combining deep human operational
+                expertise with cutting-edge AI automation.
+              </p>
+            </motion.div>
+
+            {/* Feature Card: AI Automation Insight */}
+            <motion.div
+              variants={itemVariants}
+              className="p-10 bg-white border border-gray-100 rounded-[2rem] shadow-sm relative overflow-hidden group hover:border-emerald-200 transition-colors"
+            >
+              <div className="relative z-10 space-y-4">
+                <p className="text-gray-600 leading-relaxed text-lg">
+                  Our systems utilize AI to automate appeals and crawl major
+                  payer websites.
+                </p>
+                <p className="text-gray-600 leading-relaxed text-lg italic border-l-2 border-emerald-500 pl-6">
+                  Turning complex operational hurdles into straightforward,
+                  intelligent solutions.
+                </p>
+              </div>
+              {/* Decorative Flair */}
+              <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-50 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500" />
+            </motion.div>
+
+            {/* Bottom Statement */}
+            <motion.div variants={itemVariants} className="pt-4">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-8 h-[1px] bg-emerald-500" />
+                <p className="text-black font-bold text-lg">
+                  24/7 AI Transformation
+                </p>
+              </div>
+              <p className="text-black text-2xl font-black tracking-tighter uppercase italic leading-none">
+                We don't just manage your revenue cycle,{" "}
+                <span className="text-emerald-500">we transform it.</span>
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Playfair+Display:italic@400&display=swap");
+        .font-serif {
+          font-family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default OurMission;
+</file>
+
+<file path="src/components/about/OurVision.jsx">
+import { motion } from "framer-motion";
+
+const OurVision = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20, filter: "blur(8px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section className="relative pt-16 pb-32 lg:pt-24 lg:pb-40 bg-white overflow-hidden selection:bg-emerald-100">
+      {/* Background Aesthetic - Flipped to the right side */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-emerald-50/30 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          {/* LEFT SIDE: THE PARAGRAPH CONTENT (lg:col-span-5) */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="lg:col-span-5 lg:pt-12 space-y-12 relative order-2 lg:order-1"
+          >
+            {/* Paragraph Content */}
+            <motion.div variants={itemVariants} className="space-y-6">
+              <p className="text-2xl md:text-3xl text-black leading-tight font-light">
+                We're{" "}
+                <span className="font-black border-b-2 border-emerald-500 pb-1">
+                  Revify
+                </span>
+                , and we're leading a revolution in Revenue Cycle Management.
+              </p>
+
+              <p className="text-gray-500 text-xl font-light leading-relaxed">
+                By using AI to automate tasks, we're cutting down on manual work
+                and solving complex challenges that have hindered the healthcare
+                industry for decades.
+              </p>
+            </motion.div>
+
+            {/* Bottom Insight Card */}
+            <motion.div
+              variants={itemVariants}
+              className="p-10 bg-white border border-gray-100 rounded-[2rem] shadow-sm relative overflow-hidden group hover:border-emerald-200 transition-colors"
+            >
+              <div className="relative z-10 space-y-4">
+                <p className="text-gray-600 leading-relaxed text-lg">
+                  Our goal is to transform the RCM market with smart tools that
+                  handle processes autonomously.
+                </p>
+                <p className="text-gray-600 leading-relaxed text-lg italic border-l-2 border-emerald-500 pl-6">
+                  Allowing healthcare leaders to focus on{" "}
+                  <span className="text-black font-semibold">
+                    oversight and strategy
+                  </span>{" "}
+                  rather than technical bottlenecks.
+                </p>
+              </div>
+              <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-50 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500" />
+            </motion.div>
+
+            {/* Footer Tag */}
+            <motion.div variants={itemVariants} className="pt-4">
+              <p className="text-black font-bold text-lg flex items-center gap-4">
+                <span className="w-8 h-[1px] bg-emerald-500" />
+                Innovation • Strategy • Results
+              </p>
+            </motion.div>
+          </motion.div>
+
+          {/* RIGHT SIDE: THE "BIG" TEXT (lg:col-span-7 Sticky) */}
+          <div className="lg:col-span-7 sticky top-16 order-1 lg:order-2">
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              className="lg:text-right"
+            >
+              <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.5em] mb-6 block">
+                The Future of RCM
+              </span>
+
+              <h2 className="text-[15vw] lg:text-[11rem] font-bold tracking-[-0.078em] text-black leading-[1] relative inline-block">
+                Our <br />
+                <span className="text-emerald-500 italic font-serif font-light lowercase tracking-normal">
+                  Vision
+                </span>
+                {/* Decorative Line - Adjusted position for right side alignment */}
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "120px" }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5, duration: 1 }}
+                  className="h-[2px] bg-black absolute -right-12 top-[45%] hidden lg:block"
+                />
+              </h2>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Playfair+Display:italic@400&display=swap");
+        .font-serif {
+          font-family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default OurVision;
+</file>
+
+<file path="src/components/about/WhoWeAre.jsx">
+import { motion } from "framer-motion";
+
+const WhoWeAre = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20, filter: "blur(8px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    /* Reduced top padding from py-24/40 to pt-16/24 to shift content up */
+    <section className="relative pt-16 pb-32 lg:pt-24 lg:pb-40 bg-white overflow-hidden selection:bg-emerald-100">
+      {/* Background Aesthetic */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-emerald-50/40 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          {/* LEFT SIDE: THE "BIG" TEXT */}
+          {/* Adjusted top-24 to top-16 to move it higher during scroll */}
+          <div className="lg:col-span-7 sticky top-16">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+            >
+              <span className="text-emerald-600 font-black text-xs uppercase tracking-[0.5em] mb-6 block">
+                Establishment 2024
+              </span>
+
+              <h2 className="text-[15vw] lg:text-[11rem] font-bold tracking-[-0.078em] text-black leading-[1] relative">
+                Who <br />
+                <span className="text-emerald-500 italic font-serif font-light lowercase tracking-normal">
+                  we are
+                </span>
+                {/* Overlapping Component: Decorative Dot/Line */}
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "120px" }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5, duration: 1 }}
+                  className="h-[2px] bg-black absolute -left-12 top-[45%] hidden lg:block"
+                />
+              </h2>
+            </motion.div>
+          </div>
+
+          {/* RIGHT SIDE: WHOLE CONTENT */}
+          {/* Reduced lg:pt-20 to lg:pt-12 to align with the higher text */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="lg:col-span-5 lg:pt-12 space-y-12 relative"
+          >
+            <motion.div variants={itemVariants} className="space-y-6">
+              <p className="text-2xl md:text-3xl text-black leading-tight font-light">
+                <span className="font-black border-b-2 border-emerald-500 pb-1">
+                  Revify RCM Group
+                </span>{" "}
+                is a cost-effective provider of revenue cycle consulting
+                services.
+              </p>
+
+              <p className="text-gray-500 text-xl font-light leading-relaxed">
+                Based in Austin, Tx, we leverage our operational expertise to
+                deliver measurable results for healthcare organizations and
+                their providers.
+              </p>
+            </motion.div>
+
+            <motion.div
+              variants={itemVariants}
+              className="p-10 bg-white border border-gray-100 rounded-[2rem] shadow-sm relative overflow-hidden group hover:border-emerald-200 transition-colors"
+            >
+              <div className="relative z-10 space-y-4">
+                <p className="text-gray-600 leading-relaxed text-lg">
+                  We create value for our clients by boosting operational
+                  efficiency, cutting costs, and increasing revenue.
+                </p>
+                <p className="text-gray-600 leading-relaxed text-lg italic border-l-2 border-emerald-500 pl-6">
+                  Maintaining operating margins and patient satisfaction,
+                  enabling providers to concentrate on providing care.
+                </p>
+              </div>
+              {/* Subtle background flair for the component */}
+              <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-50 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500" />
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="pt-4">
+              <p className="text-black font-bold text-lg flex items-center gap-4">
+                <span className="w-8 h-[1px] bg-emerald-500" />
+                ROI Focused Compliance
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Playfair+Display:italic@400&display=swap");
+        .font-serif {
+          font-family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default WhoWeAre;
+</file>
+
 <file path="src/components/home/ClaimLifeCycle.jsx">
 "use client";
 
@@ -1933,130 +2547,6 @@ const ClaimLifeCycle = () => {
 };
 
 export default ClaimLifeCycle;
-</file>
-
-<file path="src/components/home/HeroSection.jsx">
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import Navbar from "../Navbar";
-
-const HeroSection = () => {
-  // --- MOUSE PARALLAX LOGIC ---
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseX = useSpring(x, { stiffness: 150, damping: 20 });
-  const mouseY = useSpring(y, { stiffness: 150, damping: 20 });
-
-  const textX = useTransform(mouseX, [0, 500], [5, -5]);
-  const textY = useTransform(mouseY, [0, 500], [5, -5]);
-  const bgX = useTransform(mouseX, [0, 500], [-15, 15]);
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    x.set(e.clientX - rect.left);
-    y.set(e.clientY - rect.top);
-  };
-
-  // Animations
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
-    },
-  };
-
-  return (
-    <section
-      onMouseMove={handleMouseMove}
-      className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center font-sans selection:bg-emerald-100 bg-white"
-    >
-      {/* NAVBAR COMPONENT INCLUDED HERE */}
-      <Navbar />
-
-      {/* BACKGROUND EFFECTS */}
-      <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://grainy-gradients.vercel.app/noise.svg')",
-          }}
-        />
-
-        <motion.div
-          style={{ x: bgX }}
-          className="absolute top-[20%] left-[30%] w-[60%] h-[60%] bg-emerald-50 rounded-full blur-[120px]"
-        />
-      </div>
-
-      {/* HERO CONTENT */}
-      <motion.div
-        style={{ x: textX, y: textY }}
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 text-center px-6 max-w-5xl"
-      >
-        <motion.h1
-          variants={itemVariants}
-          className="text-black text-6xl md:text-8xl lg:text-[100px] font-medium tracking-tighter leading-[0.9] mb-8"
-        >
-          Take{" "}
-          <span className="italic font-serif font-light text-emerald-500/80">
-            control
-          </span>
-          <br />
-          of revenue,{" "}
-          <span className="font-semibold text-emerald-600">effortlessly</span>
-        </motion.h1>
-
-        <motion.p
-          variants={itemVariants}
-          className="mt-6 text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light"
-        >
-          Redefining financial flows for healthcare leaders. Manage, track, and
-          optimize your revenue cycle within a secure, unified ecosystem.
-        </motion.p>
-
-        <motion.div variants={itemVariants} className="mt-16">
-          <motion.button
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-            }}
-            whileTap={{ scale: 0.98 }}
-            className="
-              bg-emerald-500 text-black px-14 py-6 rounded-full
-              font-black text-lg transition-all
-            "
-          >
-            Get Started Free
-          </motion.button>
-        </motion.div>
-      </motion.div>
-
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Playfair+Display:italic@400&display=swap");
-        .font-serif {
-          font-family: "Playfair Display", serif;
-        }
-      `}</style>
-    </section>
-  );
-};
-
-export default HeroSection;
 </file>
 
 <file path="src/components/home/MeetTheTeam.jsx">
@@ -2237,60 +2727,6 @@ const Footer = () => {
 export default Footer;
 </file>
 
-<file path="src/components/Navbar.jsx">
-import { motion } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
-
-const Navbar = () => {
-  const location = useLocation();
-
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "About Us", path: "/about" },
-    { name: "Why Choose Us", path: "/why-us" },
-    { name: "Our Services", path: "#" },
-  ];
-  return (
-    <motion.nav className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50">
-      <Link to="/">
-        <img
-          src="/image.png"
-          alt="Logo"
-          className="w-52 h-auto object-contain"
-        />
-      </Link>
-
-      <div className="hidden lg:flex items-center bg-gray-50/80 border border-gray-200/50 backdrop-blur-md px-2 py-1.5 rounded-full shadow-sm">
-        {navItems.map((item) => (
-          <Link
-            key={item.name}
-            to={item.path}
-            className={`px-6 py-2 rounded-full text-xs font-semibold transition-all ${
-              location.pathname === item.path
-                ? "bg-black text-white"
-                : "text-gray-500 hover:text-black"
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
-      </div>
-
-      {/* CTA */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-black text-white px-8 py-2.5 rounded-full text-sm font-bold tracking-tight"
-      >
-        SIGN UP
-      </motion.button>
-    </motion.nav>
-  );
-};
-
-export default Navbar;
-</file>
-
 <file path="src/pages/LandingPage.jsx">
 import HeroSection from "../components/home/HeroSection";
 import ClaimLifeCycle from "../components/home/ClaimLifeCycle";
@@ -2346,25 +2782,186 @@ export default defineConfig([
 ]);
 </file>
 
-<file path="src/App.jsx">
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LandingPage from "./pages/LandingPage";
-import AboutPage from "./pages/AboutPage";
-import WhyUsPage from "./pages/WhyUsPage";
+<file path="src/components/home/HeroSection.jsx">
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import Navbar from "../Navbar";
+import { AnimatedText } from "../AnimatedText"; // Ensure the path is correct
 
-function App() {
+const HeroSection = () => {
+  // --- MOUSE PARALLAX LOGIC ---
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseX = useSpring(x, { stiffness: 150, damping: 20 });
+  const mouseY = useSpring(y, { stiffness: 150, damping: 20 });
+
+  const textX = useTransform(mouseX, [0, 500], [5, -5]);
+  const textY = useTransform(mouseY, [0, 500], [5, -5]);
+  const bgX = useTransform(mouseX, [0, 500], [-15, 15]);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    x.set(e.clientX - rect.left);
+    y.set(e.clientY - rect.top);
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/why-us" element={<WhyUsPage />} />
-      </Routes>
-    </Router>
-  );
-}
+    <section
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center font-sans selection:bg-emerald-100 bg-white"
+    >
+      <Navbar />
 
-export default App;
+      {/* BACKGROUND EFFECTS */}
+      <div className="absolute inset-0 z-0">
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://grainy-gradients.vercel.app/noise.svg')",
+          }}
+        />
+        <motion.div
+          style={{ x: bgX }}
+          className="absolute top-[20%] left-[30%] w-[60%] h-[60%] bg-emerald-50 rounded-full blur-[120px]"
+        />
+      </div>
+
+      {/* HERO CONTENT */}
+      <motion.div
+        style={{ x: textX, y: textY }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative z-10 text-center px-6 max-w-6xl"
+      >
+        <motion.h1
+          variants={itemVariants}
+          className="text-black text-6xl md:text-8xl lg:text-[100px] font-medium tracking-tighter leading-[1.1] mb-8"
+        >
+          Take{" "}
+          <span className="italic font-serif font-light text-emerald-500/80">
+            control
+          </span>
+          <br />
+          of revenue,{" "}
+          <AnimatedText
+            text="effortlessly"
+            className="inline-flex vertical-align-middle" // Keeps it inline with the text
+            textClassName="text-6xl md:text-8xl lg:text-[100px] font-semibold text-emerald-600 tracking-tighter leading-none"
+            underlineClassName="text-emerald-400/60 -bottom-2" // Adjusts underline color and position
+            underlineDuration={2}
+          />
+        </motion.h1>
+
+        <motion.p
+          variants={itemVariants}
+          className="mt-6 text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light"
+        >
+          Redefining financial flows for healthcare leaders. Manage, track, and
+          optimize your revenue cycle within a secure, unified ecosystem.
+        </motion.p>
+
+        <motion.div variants={itemVariants} className="mt-16">
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+            }}
+            whileTap={{ scale: 0.98 }}
+            className="
+              bg-emerald-500 text-black px-14 py-6 rounded-full
+              font-black text-lg transition-all
+            "
+          >
+            Get Started Free
+          </motion.button>
+        </motion.div>
+      </motion.div>
+
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Playfair+Display:italic@400&display=swap");
+        .font-serif {
+          family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default HeroSection;
+</file>
+
+<file path="src/components/Navbar.jsx">
+import { motion } from "framer-motion";
+import { Link, useLocation } from "react-router-dom";
+
+const Navbar = () => {
+  const location = useLocation();
+
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "About Us", path: "/about" },
+    { name: "Why Choose Us", path: "/why-us" },
+    { name: "Our Services", path: "/services" },
+  ];
+  return (
+    <motion.nav className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50">
+      <Link to="/">
+        <img
+          src="/image.png"
+          alt="Logo"
+          className="w-52 h-auto object-contain"
+        />
+      </Link>
+
+      <div className="hidden lg:flex items-center bg-gray-50/80 border border-gray-200/50 backdrop-blur-md px-2 py-1.5 rounded-full shadow-sm">
+        {navItems.map((item) => (
+          <Link
+            key={item.name}
+            to={item.path}
+            className={`px-6 py-2 rounded-full text-xs font-semibold transition-all ${
+              location.pathname === item.path
+                ? "bg-black text-white"
+                : "text-gray-500 hover:text-black"
+            }`}
+          >
+            {item.name}
+          </Link>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-black text-white px-8 py-2.5 rounded-full text-sm font-bold tracking-tight"
+      >
+        SIGN UP
+      </motion.button>
+    </motion.nav>
+  );
+};
+
+export default Navbar;
 </file>
 
 <file path="package.json">
@@ -2410,6 +3007,29 @@ export default App;
     "vite": "^7.1.6"
   }
 }
+</file>
+
+<file path="src/App.jsx">
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import AboutPage from "./pages/AboutPage";
+import WhyUsPage from "./pages/WhyUsPage";
+import ServicesPage from "./pages/ServicesPage";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/why-us" element={<WhyUsPage />} />
+        <Route path="/services" element={<ServicesPage />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
 </file>
 
 </files>

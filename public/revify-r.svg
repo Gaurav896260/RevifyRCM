@@ -1,0 +1,38 @@
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <linearGradient id="revifyGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6BCF9B"/>
+      <stop offset="55%" stop-color="#2FA4C9"/>
+      <stop offset="100%" stop-color="#1E3A5F"/>
+    </linearGradient>
+  </defs>
+
+  <path
+    d="
+      M18 12
+      H34
+      C43 12 48 17 48 24
+      C48 29 45 33 39 35
+      L48 52
+      H39
+      L31 36
+      H26
+      V52
+      H18
+      Z
+
+      M26 19
+      V30
+      H33
+      C37 30 40 28 40 24
+      C40 21 37 19 33 19
+      Z
+    "
+    fill="url(#revifyGradient)"
+  />
+</svg>

@@ -1,8 +1,20 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const location = useLocation();
+  const { scrollY } = useScroll();
+  const [isAtTop, setIsAtTop] = useState(true);
+
+  // Listen to scroll changes to toggle navbar visibility
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 50) {
+      setIsAtTop(false);
+    } else {
+      setIsAtTop(true);
+    }
+  });
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -10,8 +22,17 @@ const Navbar = () => {
     { name: "Why Choose Us", path: "/why-us" },
     { name: "Our Services", path: "/services" },
   ];
+
   return (
-    <motion.nav className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50">
+    <motion.nav
+      initial={{ y: 0, opacity: 1 }}
+      animate={{
+        y: isAtTop ? 0 : -100,
+        opacity: isAtTop ? 1 : 0,
+      }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50"
+    >
       <Link to="/">
         <img
           src="/image.png"
