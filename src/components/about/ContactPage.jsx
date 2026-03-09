@@ -41,12 +41,17 @@ const ContactPage = () => {
             </p>
           </div>
 
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+          <form
+            action="https://formspree.io/f/xrgnovpn"
+            method="POST"
+            className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10"
+          >
             {/* LEFT COLUMN: INPUTS */}
             <div className="space-y-10">
               <div className="relative group">
                 <input
                   type="text"
+                  name="firstName"
                   placeholder="First Name"
                   required
                   className="w-full bg-transparent border-b border-white/30 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors"
@@ -59,6 +64,7 @@ const ContactPage = () => {
               <div className="relative group">
                 <input
                   type="text"
+                  name="lastName"
                   placeholder="Last Name"
                   required
                   className="w-full bg-transparent border-b border-white/30 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors"
@@ -71,6 +77,7 @@ const ContactPage = () => {
               <div className="relative group">
                 <input
                   type="email"
+                  name="email"
                   placeholder="Email"
                   required
                   className="w-full bg-transparent border-b border-white/30 py-3 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors"
@@ -84,6 +91,8 @@ const ContactPage = () => {
                 <input
                   type="checkbox"
                   id="signup"
+                  name="newsletterSignup"
+                  value="yes"
                   className="mt-1.5 accent-black"
                 />
                 <label
@@ -100,6 +109,7 @@ const ContactPage = () => {
             <div className="flex flex-col justify-between">
               <div className="relative">
                 <textarea
+                  name="message"
                   placeholder="Type your message here"
                   required
                   rows="4"

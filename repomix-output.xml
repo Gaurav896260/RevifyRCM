@@ -1748,22 +1748,6 @@ dist-ssr
 *.sw?
 </file>
 
-<file path="index.html">
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/revify-r.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
-</file>
-
 <file path="postcss.config.js">
 // ESM syntax
 export default {
@@ -2782,186 +2766,20 @@ export default defineConfig([
 ]);
 </file>
 
-<file path="src/components/home/HeroSection.jsx">
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import Navbar from "../Navbar";
-import { AnimatedText } from "../AnimatedText"; // Ensure the path is correct
-
-const HeroSection = () => {
-  // --- MOUSE PARALLAX LOGIC ---
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseX = useSpring(x, { stiffness: 150, damping: 20 });
-  const mouseY = useSpring(y, { stiffness: 150, damping: 20 });
-
-  const textX = useTransform(mouseX, [0, 500], [5, -5]);
-  const textY = useTransform(mouseY, [0, 500], [5, -5]);
-  const bgX = useTransform(mouseX, [0, 500], [-15, 15]);
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    x.set(e.clientX - rect.left);
-    y.set(e.clientY - rect.top);
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
-    },
-  };
-
-  return (
-    <section
-      onMouseMove={handleMouseMove}
-      className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center font-sans selection:bg-emerald-100 bg-white"
-    >
-      <Navbar />
-
-      {/* BACKGROUND EFFECTS */}
-      <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://grainy-gradients.vercel.app/noise.svg')",
-          }}
-        />
-        <motion.div
-          style={{ x: bgX }}
-          className="absolute top-[20%] left-[30%] w-[60%] h-[60%] bg-emerald-50 rounded-full blur-[120px]"
-        />
-      </div>
-
-      {/* HERO CONTENT */}
-      <motion.div
-        style={{ x: textX, y: textY }}
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 text-center px-6 max-w-6xl"
-      >
-        <motion.h1
-          variants={itemVariants}
-          className="text-black text-6xl md:text-8xl lg:text-[100px] font-medium tracking-tighter leading-[1.1] mb-8"
-        >
-          Take{" "}
-          <span className="italic font-serif font-light text-emerald-500/80">
-            control
-          </span>
-          <br />
-          of revenue,{" "}
-          <AnimatedText
-            text="effortlessly"
-            className="inline-flex vertical-align-middle" // Keeps it inline with the text
-            textClassName="text-6xl md:text-8xl lg:text-[100px] font-semibold text-emerald-600 tracking-tighter leading-none"
-            underlineClassName="text-emerald-400/60 -bottom-2" // Adjusts underline color and position
-            underlineDuration={2}
-          />
-        </motion.h1>
-
-        <motion.p
-          variants={itemVariants}
-          className="mt-6 text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light"
-        >
-          Redefining financial flows for healthcare leaders. Manage, track, and
-          optimize your revenue cycle within a secure, unified ecosystem.
-        </motion.p>
-
-        <motion.div variants={itemVariants} className="mt-16">
-          <motion.button
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-            }}
-            whileTap={{ scale: 0.98 }}
-            className="
-              bg-emerald-500 text-black px-14 py-6 rounded-full
-              font-black text-lg transition-all
-            "
-          >
-            Get Started Free
-          </motion.button>
-        </motion.div>
-      </motion.div>
-
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Playfair+Display:italic@400&display=swap");
-        .font-serif {
-          family: "Playfair Display", serif;
-        }
-      `}</style>
-    </section>
-  );
-};
-
-export default HeroSection;
-</file>
-
-<file path="src/components/Navbar.jsx">
-import { motion } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
-
-const Navbar = () => {
-  const location = useLocation();
-
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "About Us", path: "/about" },
-    { name: "Why Choose Us", path: "/why-us" },
-    { name: "Our Services", path: "/services" },
-  ];
-  return (
-    <motion.nav className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50">
-      <Link to="/">
-        <img
-          src="/image.png"
-          alt="Logo"
-          className="w-52 h-auto object-contain"
-        />
-      </Link>
-
-      <div className="hidden lg:flex items-center bg-gray-50/80 border border-gray-200/50 backdrop-blur-md px-2 py-1.5 rounded-full shadow-sm">
-        {navItems.map((item) => (
-          <Link
-            key={item.name}
-            to={item.path}
-            className={`px-6 py-2 rounded-full text-xs font-semibold transition-all ${
-              location.pathname === item.path
-                ? "bg-black text-white"
-                : "text-gray-500 hover:text-black"
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
-      </div>
-
-      {/* CTA */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-black text-white px-8 py-2.5 rounded-full text-sm font-bold tracking-tight"
-      >
-        SIGN UP
-      </motion.button>
-    </motion.nav>
-  );
-};
-
-export default Navbar;
+<file path="index.html">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/revify-r.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
 </file>
 
 <file path="package.json">
@@ -3007,6 +2825,282 @@ export default Navbar;
     "vite": "^7.1.6"
   }
 }
+</file>
+
+<file path="src/components/home/HeroSection.jsx">
+import { useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import Navbar from "../Navbar";
+import { AnimatedText } from "../AnimatedText"; // Ensure the path is correct
+
+// Extracted exactly from your provided image
+const THEMES = [
+  {
+    name: "TrustTech Blue-Green",
+    primary: "#007BFF", // Bright Blue
+    secondary: "#28A745", // Fresh Green
+    accent: "#FFC107", // Vibrant Yellow
+    bgLight: "rgba(0, 123, 255, 0.08)",
+  },
+  {
+    name: "InnoHealth Purple-Teal",
+    primary: "#6F42C1", // Deep Purple
+    secondary: "#20C997", // Teal
+    accent: "#FD7E14", // Coral Orange
+    bgLight: "rgba(111, 66, 193, 0.08)",
+  },
+  {
+    name: "Wellness Navy-Neutral",
+    primary: "#001F3F", // Navy Blue
+    secondary: "#6C757D", // Cool Gray
+    accent: "#17A2B8", // Aqua
+    bgLight: "rgba(0, 31, 63, 0.08)",
+  },
+  {
+    name: "Energy Heal Orange-Blue",
+    primary: "#FD7E14", // Bright Orange
+    secondary: "#0D6EFD", // Cobalt Blue
+    accent: "#198754", // Forest Green
+    bgLight: "rgba(253, 126, 20, 0.08)",
+  },
+];
+
+const HeroSection = () => {
+  // --- THEME STATE ---
+  const [themeIndex, setThemeIndex] = useState(0);
+  const currentTheme = THEMES[themeIndex];
+
+  // --- MOUSE PARALLAX LOGIC ---
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseX = useSpring(x, { stiffness: 150, damping: 20 });
+  const mouseY = useSpring(y, { stiffness: 150, damping: 20 });
+
+  const textX = useTransform(mouseX, [0, 500], [5, -5]);
+  const textY = useTransform(mouseY, [0, 500], [5, -5]);
+  const bgX = useTransform(mouseX, [0, 500], [-15, 15]);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    x.set(e.clientX - rect.left);
+    y.set(e.clientY - rect.top);
+  };
+
+  const cycleTheme = () => {
+    setThemeIndex((prev) => (prev + 1) % THEMES.length);
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 1, ease: [0.19, 1, 0.22, 1] },
+    },
+  };
+
+  return (
+    <section
+      onMouseMove={handleMouseMove}
+      style={{
+        // Injecting CSS Variables to power Tailwind arbitrary values smoothly
+        "--theme-primary": currentTheme.primary,
+        "--theme-secondary": currentTheme.secondary,
+        "--theme-accent": currentTheme.accent,
+        "--theme-bg-light": currentTheme.bgLight,
+      }}
+      className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center font-sans selection:bg-[var(--theme-bg-light)] bg-white transition-colors duration-500"
+    >
+      <Navbar />
+
+      {/* BACKGROUND EFFECTS */}
+      <div className="absolute inset-0 z-0">
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              "url('https://grainy-gradients.vercel.app/noise.svg')",
+          }}
+        />
+        <motion.div
+          style={{ x: bgX }}
+          className="absolute top-[20%] left-[30%] w-[60%] h-[60%] bg-[var(--theme-bg-light)] rounded-full blur-[120px] transition-colors duration-500"
+        />
+      </div>
+
+      {/* HERO CONTENT */}
+      <motion.div
+        style={{ x: textX, y: textY }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative z-10 text-center px-6 max-w-6xl"
+      >
+        <motion.h1
+          variants={itemVariants}
+          className="text-black text-6xl md:text-8xl lg:text-[100px] font-medium tracking-tighter leading-[1.1] mb-8"
+        >
+          Take{" "}
+          <span className="italic font-serif font-light text-[var(--theme-primary)] opacity-90 transition-colors duration-500">
+            control
+          </span>
+          <br />
+          of revenue,{" "}
+          <AnimatedText
+            text="effortlessly"
+            className="inline-flex vertical-align-middle"
+            textClassName="text-6xl md:text-8xl lg:text-[100px] font-semibold text-[var(--theme-secondary)] tracking-tighter leading-none transition-colors duration-500"
+            underlineClassName="text-[var(--theme-accent)] opacity-80 -bottom-2 transition-colors duration-500"
+            underlineDuration={2}
+          />
+        </motion.h1>
+
+        <motion.p
+          variants={itemVariants}
+          className="mt-6 text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light"
+        >
+          Redefining financial flows for healthcare leaders. Manage, track, and
+          optimize your revenue cycle within a secure, unified ecosystem.
+        </motion.p>
+
+        <motion.div variants={itemVariants} className="mt-16">
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+            }}
+            whileTap={{ scale: 0.98 }}
+            className="
+              bg-[var(--theme-primary)] text-white px-14 py-6 rounded-full
+              font-black text-lg transition-all duration-300
+            "
+          >
+            Get Started Free
+          </motion.button>
+        </motion.div>
+      </motion.div>
+
+      {/* FLOATING THEME TOGGLE BUTTON */}
+      <div className="absolute bottom-8 right-8 z-50 flex items-center gap-4 bg-white/80 backdrop-blur-md p-2 pl-4 rounded-full shadow-lg border border-gray-100">
+        <span className="text-sm font-medium text-gray-600">
+          {currentTheme.name}
+        </span>
+        <button
+          onClick={cycleTheme}
+          className="flex gap-1 p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+          title="Toggle Theme"
+        >
+          <div
+            className="w-5 h-5 rounded-full"
+            style={{ backgroundColor: currentTheme.primary }}
+          />
+          <div
+            className="w-5 h-5 rounded-full"
+            style={{ backgroundColor: currentTheme.secondary }}
+          />
+          <div
+            className="w-5 h-5 rounded-full"
+            style={{ backgroundColor: currentTheme.accent }}
+          />
+        </button>
+      </div>
+
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Playfair+Display:italic@400&display=swap");
+        .font-serif {
+          family: "Playfair Display", serif;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default HeroSection;
+</file>
+
+<file path="src/components/Navbar.jsx">
+import { useState } from "react";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { Link, useLocation } from "react-router-dom";
+
+const Navbar = () => {
+  const location = useLocation();
+  const { scrollY } = useScroll();
+  const [isAtTop, setIsAtTop] = useState(true);
+
+  // Listen to scroll changes to toggle navbar visibility
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 50) {
+      setIsAtTop(false);
+    } else {
+      setIsAtTop(true);
+    }
+  });
+
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "About Us", path: "/about" },
+    { name: "Why Choose Us", path: "/why-us" },
+    { name: "Our Services", path: "/services" },
+  ];
+
+  return (
+    <motion.nav
+      initial={{ y: 0, opacity: 1 }}
+      animate={{
+        y: isAtTop ? 0 : -100,
+        opacity: isAtTop ? 1 : 0,
+      }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="fixed top-8 w-full px-8 md:px-16 flex justify-between items-center z-50"
+    >
+      <Link to="/">
+        <img
+          src="/image.png"
+          alt="Logo"
+          className="w-52 h-auto object-contain"
+        />
+      </Link>
+
+      <div className="hidden lg:flex items-center bg-gray-50/80 border border-gray-200/50 backdrop-blur-md px-2 py-1.5 rounded-full shadow-sm">
+        {navItems.map((item) => (
+          <Link
+            key={item.name}
+            to={item.path}
+            className={`px-6 py-2 rounded-full text-xs font-semibold transition-all ${
+              location.pathname === item.path
+                ? "bg-black text-white"
+                : "text-gray-500 hover:text-black"
+            }`}
+          >
+            {item.name}
+          </Link>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-black text-white px-8 py-2.5 rounded-full text-sm font-bold tracking-tight"
+      >
+        SIGN UP
+      </motion.button>
+    </motion.nav>
+  );
+};
+
+export default Navbar;
 </file>
 
 <file path="src/App.jsx">
